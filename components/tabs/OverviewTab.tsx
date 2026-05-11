@@ -11,8 +11,8 @@ const pinnedRepos = [
     languageColor: "#00ADD8",
     stars: 42,
     forks: 8,
-    url: "https://github.com/aguitauwu/gitsune",
-    starUrl: "https://github.com/aguitauwu/gitsune",
+    url: "https://github.com/awa-omg/gitsune",
+    starUrl: "https://github.com/awa-omg/gitsune",
   },
   {
     name: "NHE",

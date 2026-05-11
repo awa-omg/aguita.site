@@ -47,7 +47,7 @@ const ChessIcon = () => (
 )
 
 const links = [
-  { label: "GitHub", url: "https://github.com/aguitauwu", username: "@aguitauwu", icon: GitHubIcon, color: "#e6edf3" },
+  { label: "GitHub", url: "https://github.com/awa-omg", username: "@awa-omg", icon: GitHubIcon, color: "#e6edf3" },
   { label: "GitHub (OpceanAI)", url: "https://github.com/OpceanAI", username: "@OpceanAI", icon: GitHubIcon, color: "#e6edf3" },
   { label: "GitLab", url: "https://gitlab.com/aguitauwu", username: "@aguitauwu", icon: GitLabIcon, color: "#fc6d26" },
   { label: "Hugging Face", url: "https://huggingface.co/OpceanAI", username: "OpceanAI", icon: HuggingFaceIcon, color: "#ffcc00" },
@@ -79,8 +79,8 @@ export function ContactTab() {
       <div className="mb-8 p-4 border border-[#30363d] rounded-md bg-[#161b22]">
         <h3 className="text-sm font-semibold text-[#e6edf3] mb-3">Support my work</h3>
         <iframe 
-          src="https://github.com/sponsors/aguitauwu/button" 
-          title="Sponsor aguitauwu" 
+          src="https://github.com/sponsors/awa-omg/button" 
+          title="Sponsor awa-omg" 
           height="32" 
           width="114" 
           style={{ border: 0, borderRadius: '6px' }}

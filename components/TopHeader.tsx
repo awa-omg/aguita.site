@@ -39,7 +39,7 @@ export function TopHeader() {
               <path d="M6 8.825c-.2 0-.4-.1-.5-.2l-3.3-3.3c-.3-.3-.3-.8 0-1.1.3-.3.8-.3 1.1 0l2.7 2.7 2.7-2.7c.3-.3.8-.3 1.1 0 .3.3.3.8 0 1.1l-3.2 3.2c-.2.2-.4.3-.6.3Z" />
             </svg>
           </button>
-          <a href="https://github.com/aguitauwu" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/awa-omg" target="_blank" rel="noopener noreferrer">
             <div className="w-8 h-8 rounded-full overflow-hidden border border-[#30363d]">
               <img 
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/dc7400c23d37c9ad79dd17854be3e1e3-07BbTYGInv9LEf0CGZm4XzB18yi2OC.jpg"

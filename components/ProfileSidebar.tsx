@@ -40,7 +40,7 @@ export function ProfileSidebar() {
       {/* Name */}
       <div className="mb-4">
         <h1 className="text-[24px] font-semibold text-[#e6edf3] leading-tight">awa</h1>
-        <p className="text-[20px] font-light text-[#8b949e]">aguitauwu</p>
+        <p className="text-[20px] font-light text-[#8b949e]">awa-omg</p>
       </div>
 
       {/* Bio */}
@@ -51,7 +51,7 @@ export function ProfileSidebar() {
       {/* Follow button / Sponsor */}
       <div className="flex gap-2 mb-4">
         <a
-          href="https://github.com/aguitauwu"
+          href="https://github.com/awa-omg"
           target="_blank"
           rel="noopener noreferrer"
           className="flex-1 px-4 py-[5px] text-sm font-medium bg-[#21262d] text-[#c9d1d9] border border-[#30363d] rounded-md hover:bg-[#30363d] hover:border-[#8b949e] transition-colors text-center"
@@ -60,8 +60,8 @@ export function ProfileSidebar() {
         </a>
         <div className="flex-shrink-0">
           <iframe 
-            src="https://github.com/sponsors/aguitauwu/button" 
-            title="Sponsor aguitauwu" 
+            src="https://github.com/sponsors/awa-omg/button" 
+            title="Sponsor awa-omg" 
             height="32" 
             width="114" 
             style={{ border: 0, borderRadius: '6px' }}

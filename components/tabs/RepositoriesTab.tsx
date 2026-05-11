@@ -11,7 +11,7 @@ const repositories = [
     languageColor: "#00ADD8",
     stars: 42,
     forks: 8,
-    url: "https://github.com/aguitauwu/gitsune",
+    url: "https://github.com/awa-omg/gitsune",
     updatedAt: "Updated 2 days ago",
   },
   {

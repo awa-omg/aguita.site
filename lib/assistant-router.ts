@@ -1,61 +1,51 @@
 export type AgentType = "command" | "knowledge" | "web" | "chat" | "tool"
 
-export interface AgentResult {
-  agent: AgentType
-  response: string
-  toolUsed?: string
-  skipModel?: boolean
-}
-
 export function classifyIntent(message: string): AgentType {
-  const trimmed = message.trim().toLowerCase()
+  const trimmed = message.trim()
+  const lower = trimmed.toLowerCase()
 
-  // Command patterns (highest priority)
+  // 1. Commands (highest priority) - starts with /
   if (trimmed.startsWith("/")) {
     return "command"
   }
 
-  // Tool/navigation patterns
-  const toolPatterns = [
-    /^(show|navigate|go to|open|switch to|display|bring up|take me to)/,
-    /^(scroll|find|search for|locate|where is)/,
-    /^(highlight|point to|show me)/,
-  ]
-  if (toolPatterns.some(p => p.test(trimmed))) {
-    return "tool"
-  }
-
-  // Web search patterns
-  const webPatterns = [
-    /^(search web|web search|google|find online|what is the latest|news about)/,
-    /^(search the internet|look up|research)/,
-  ]
-  if (webPatterns.some(p => p.test(trimmed))) {
+  // 2. Web search patterns
+  if (/^(search web|web search|google it|find online|latest news|news about|search the internet)/i.test(lower)) {
     return "web"
   }
 
-  // Knowledge patterns (specific keywords about awa/projects)
+  // 3. Tool/navigation patterns - specific actions
+  if (/^(navigate to|go to tab|switch to tab|cd |open tab)/i.test(lower)) {
+    return "tool"
+  }
+  if (/^(scroll to|scroll down|scroll up)/i.test(lower)) {
+    return "tool"
+  }
+  if (/^(highlight|show me the repo|find the repo|where is the repo)/i.test(lower)) {
+    return "tool"
+  }
+  if (/^(open (github|email|whatsapp|telegram|link|website))/i.test(lower)) {
+    return "tool"
+  }
+  if (/^(copy email|send email|contact)/i.test(lower)) {
+    return "tool"
+  }
+
+  // 4. Knowledge patterns - questions about awa's work
   const knowledgeKeywords = [
     "doki", "yuuki", "yumo", "eliza", "tos", "ixari", "opceanai",
     "awa", "aguita", "portfolio", "project", "repo", "model",
-    "paper", "research", "container", "android", "ai", "training",
-    "redmi", "zero budget", "cloud", "open source",
+    "paper", "research", "container", "android", "training",
+    "redmi", "zero budget", "cloud budget", "open source",
+    "who are you", "who is awa", "what is opcean", "what is doki",
+    "what is yuuki", "what is yumo", "what is eliza",
+    "tell me about", "explain", "how does", "how was",
+    "tech stack", "skills", "experience",
   ]
-  if (knowledgeKeywords.some(k => trimmed.includes(k))) {
+  if (knowledgeKeywords.some(k => lower.includes(k))) {
     return "knowledge"
   }
 
-  // Default to chat (requires AI model)
+  // 5. Default to chat (requires AI model)
   return "chat"
-}
-
-export function getAgentPriority(agent: AgentType): number {
-  const priorities: Record<AgentType, number> = {
-    command: 1,
-    tool: 2,
-    knowledge: 3,
-    web: 4,
-    chat: 5,
-  }
-  return priorities[agent] || 5
 }

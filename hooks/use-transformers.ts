@@ -65,23 +65,20 @@ export function useTransformers(toolCallbacks: any) {
   const generatorRef = useRef<any>(null)
   const toolExecutorRef = useRef<ToolExecutor | null>(null)
   const isInitialized = useRef(false)
-  const loadingTimeout = useRef<NodeJS.Timeout | null>(null)
+  const toolCallbacksRef = useRef(toolCallbacks)
+  const statusRef = useRef(status)
 
-  // Initialize tool executor
+  // Keep refs in sync
   useEffect(() => {
+    toolCallbacksRef.current = toolCallbacks
     if (toolCallbacks) {
       toolExecutorRef.current = createToolExecutor(toolCallbacks)
     }
   }, [toolCallbacks])
 
-  // Clear timeout on unmount
   useEffect(() => {
-    return () => {
-      if (loadingTimeout.current) {
-        clearTimeout(loadingTimeout.current)
-      }
-    }
-  }, [])
+    statusRef.current = status
+  }, [status])
 
   const loadModel = useCallback(async (force = false) => {
     if (isInitialized.current && !force) return
@@ -97,24 +94,6 @@ export function useTransformers(toolCallbacks: any) {
     setStatus("loading")
     setProgress(0)
     setError(null)
-
-    // Timeout: if loading takes >30s, show message
-    if (loadingTimeout.current) clearTimeout(loadingTimeout.current)
-    loadingTimeout.current = setTimeout(() => {
-      setMessages((prev) => {
-        // Only add if still loading
-        const lastLoading = prev.find(m => m.role === "assistant" && m.content.includes("Still downloading"))
-        if (!lastLoading && status === "loading") {
-          return [...prev, {
-            role: "assistant",
-            content: "⏳ Still downloading... This can take 1-2 minutes on mobile. You can chat with my knowledge base while waiting!",
-            timestamp: Date.now(),
-            agent: "system",
-          }]
-        }
-        return prev
-      })
-    }, 15000)
 
     try {
       const generator = await pipeline("text-generation", detected.model, {
@@ -134,58 +113,54 @@ export function useTransformers(toolCallbacks: any) {
       setStatus("ready")
       setModelReady(true)
       setProgress(100)
-      if (loadingTimeout.current) clearTimeout(loadingTimeout.current)
     } catch (err: any) {
       console.error("Failed to load model:", err)
       setError(err.message || "Failed to load AI model")
       setStatus("error")
-      if (loadingTimeout.current) clearTimeout(loadingTimeout.current)
     }
   }, [])
 
-  const handleCommand = useCallback(async (command: string, args: string): Promise<string | null> => {
+  const handleCommand = useCallback((command: string, args: string): string | null => {
+    const executor = toolExecutorRef.current
     switch (command) {
       case "/help":
         return getHelpText()
       case "/navigate":
-        if (toolExecutorRef.current) {
-          return toolExecutorRef.current.navigate(args)
-        }
+        if (executor) return executor.navigate(args)
         return "Navigation not available"
       case "/search":
         const results = searchKnowledge(args)
-        return results.length > 0 ? results.join("\n\n") : "No results found in portfolio knowledge base."
+        return results.length > 0 ? results.join("\n\n") : "No results found in knowledge base."
       case "/web":
-        return await searchWeb(args)
+        // Web search is async, handled separately
+        return null
       case "/repo":
         const repoResults = searchKnowledge(args)
         return repoResults.length > 0 ? repoResults[0] : "Repository not found."
       case "/stats":
-        return `Portfolio Stats:\n- 20+ Models\n- 4+ Repositories\n- 3 Papers\n- 12 Isolation Levels\n- 0$ Cloud Budget`
+        return "Portfolio Stats:\n- 20+ Models\n- 4+ Repositories\n- 3 Papers\n- 12 Isolation Levels\n- 0$ Cloud Budget"
       case "/clear":
         setMessages([])
         return "Chat history cleared!"
       case "/terminal":
-        if (toolExecutorRef.current) {
-          return toolExecutorRef.current.openTerminal()
-        }
+        if (executor) return executor.openTerminal()
         return "Terminal not available"
       case "/email":
-        if (toolExecutorRef.current) {
-          toolExecutorRef.current.openApp("email")
+        if (executor) {
+          executor.openApp("email")
           return "Email app opened! Contact: aguitachan3@gmail.com"
         }
         return "Email not available"
       case "/github":
-        if (toolExecutorRef.current) {
-          toolExecutorRef.current.openLink("https://github.com/awa-omg")
+        if (executor) {
+          executor.openLink("https://github.com/awa-omg")
           return "Opened awa's GitHub!"
         }
         return "GitHub not available"
       case "/joke":
         return getRandomJoke()
       case "/easter":
-        return "🥚 Easter Eggs:\n- Press the Konami code (↑↑↓↓←→←→BA) for matrix rain\n- Press ` for terminal\n- Ctrl+Shift+A for this chat\n- Try asking about 'zero budget' or 'Redmi 12'"
+        return "Easter Eggs:\n- Konami code (up up down down left right left right B A) for matrix rain\n- Press backtick for terminal\n- Ctrl+Shift+A for this chat\n- Try asking about 'zero budget' or 'Redmi 12'"
       default:
         return null
     }
@@ -193,10 +168,11 @@ export function useTransformers(toolCallbacks: any) {
 
   const handleToolUse = useCallback((message: string): string => {
     const toolUse = detectToolUse(message)
-    if (toolUse && toolExecutorRef.current) {
-      const executor = toolExecutorRef.current as any
-      if (executor[toolUse.tool]) {
-        return executor[toolUse.tool](toolUse.args)
+    const executor = toolExecutorRef.current
+    if (toolUse && executor) {
+      const exec = executor as any
+      if (exec[toolUse.tool]) {
+        return exec[toolUse.tool](toolUse.args)
       }
     }
     return ""
@@ -210,9 +186,10 @@ export function useTransformers(toolCallbacks: any) {
     return ""
   }, [])
 
+  // Stable sendMessage - uses refs to avoid dependency issues
   const sendMessage = useCallback(
     async (userMessage: string) => {
-      // Special welcome message
+      // Welcome message
       if (userMessage === "__welcome__") {
         setMessages((prev) => [
           ...prev,
@@ -221,96 +198,93 @@ export function useTransformers(toolCallbacks: any) {
         return
       }
 
-      const intent = classifyIntent(userMessage)
       const timestamp = Date.now()
+      const intent = classifyIntent(userMessage)
 
-      // Always add user message
+      // Add user message
       setMessages((prev) => [...prev, { role: "user", content: userMessage, timestamp }])
 
-      // Handle commands (no model needed)
+      // COMMANDS - no model needed
       if (intent === "command") {
-        const command = parseCommand(userMessage)
-        if (command) {
-          const response = await handleCommand(command.command, command.args)
-          if (response !== null) {
-            setMessages((prev) => [
-              ...prev,
-              {
-                role: "assistant",
-                content: response,
-                timestamp: Date.now(),
-                agent: "command",
-                toolUsed: command.command,
-              },
-            ])
-            return
-          }
+        const parsed = parseCommand(userMessage)
+        if (!parsed) return
+
+        // /web is async
+        if (parsed.command === "/web") {
+          const webResult = await searchWeb(parsed.args)
+          setMessages((prev) => [
+            ...prev,
+            { role: "assistant", content: webResult, timestamp: Date.now(), agent: "web", toolUsed: "/web" },
+          ])
+          return
+        }
+
+        const response = handleCommand(parsed.command, parsed.args)
+        if (response !== null) {
+          setMessages((prev) => [
+            ...prev,
+            { role: "assistant", content: response, timestamp: Date.now(), agent: "command", toolUsed: parsed.command },
+          ])
+          return
         }
       }
 
-      // Handle tool use (no model needed)
+      // TOOL USE - no model needed
       if (intent === "tool") {
         const toolResponse = handleToolUse(userMessage)
         if (toolResponse) {
           setMessages((prev) => [
             ...prev,
-            {
-              role: "assistant",
-              content: `🔧 Action: ${toolResponse}`,
-              timestamp: Date.now(),
-              agent: "tool",
-            },
+            { role: "assistant", content: "Action: " + toolResponse, timestamp: Date.now(), agent: "tool" },
+          ])
+          return
+        }
+        // If tool use didn't match, fall through to knowledge
+        const knowledgeResponse = handleKnowledge(userMessage)
+        if (knowledgeResponse) {
+          setMessages((prev) => [
+            ...prev,
+            { role: "assistant", content: "From knowledge base:\n" + knowledgeResponse, timestamp: Date.now(), agent: "knowledge" },
           ])
           return
         }
       }
 
-      // Handle knowledge queries (no model needed)
+      // KNOWLEDGE - no model needed
       if (intent === "knowledge") {
         const knowledgeResponse = handleKnowledge(userMessage)
         if (knowledgeResponse) {
           setMessages((prev) => [
             ...prev,
-            {
-              role: "assistant",
-              content: `📚 From knowledge base:\n${knowledgeResponse}`,
-              timestamp: Date.now(),
-              agent: "knowledge",
-            },
+            { role: "assistant", content: "From knowledge base:\n" + knowledgeResponse, timestamp: Date.now(), agent: "knowledge" },
           ])
           return
         }
       }
 
-      // Handle web search (no model needed)
+      // WEB SEARCH - no model needed
       if (intent === "web") {
-        const webResponse = await searchWeb(userMessage)
+        const webResult = await searchWeb(userMessage)
         setMessages((prev) => [
           ...prev,
-          {
-            role: "assistant",
-            content: webResponse,
-            timestamp: Date.now(),
-            agent: "web",
-          },
+          { role: "assistant", content: webResult, timestamp: Date.now(), agent: "web" },
         ])
         return
       }
 
-      // Chat (requires model) - try to load if not loaded
+      // CHAT - requires model
       if (!generatorRef.current || !modelReady) {
-        // Try to load model if not loaded
-        if (status === "idle" || status === "error" || status === "offline") {
+        // Try loading model
+        if (statusRef.current === "idle" || statusRef.current === "error") {
           await loadModel()
         }
 
-        // If still not ready after attempting load, use fallback
+        // If still not ready, fallback
         if (!generatorRef.current) {
-          const fallbackResponse = handleKnowledge(userMessage)
-          const response = fallbackResponse
-            ? `⚡ AI model offline. Using knowledge base:\n${fallbackResponse}`
-            : "⚡ AI model offline. Ask me about awa's projects or use /search <query>"
-
+          const fallback = handleKnowledge(userMessage)
+          const response = fallback
+            ? "AI model offline. From knowledge base:\n" + fallback
+            : "AI model offline. Ask me about awa's projects or use /help for commands."
           setMessages((prev) => [
             ...prev,
             { role: "assistant", content: response, timestamp: Date.now(), agent: "offline" },
@@ -319,17 +293,15 @@ export function useTransformers(toolCallbacks: any) {
         }
       }
 
-      // Use model for chat
+      // Generate with model
       if (generatorRef.current && modelReady) {
         setStatus("generating")
 
-        const recentMessages = messages.slice(-4)
         const knowledge = searchKnowledge(userMessage)
-        const knowledgeContext = knowledge.length > 0 ? `\n\nRelevant knowledge:\n${knowledge.join("\n")}` : ""
+        const knowledgeCtx = knowledge.length > 0 ? "\n\nRelevant knowledge:\n" + knowledge.join("\n") : ""
 
-        const currentMessages = [
-          { role: "system", content: SYSTEM_PROMPT + knowledgeContext },
-          ...recentMessages.map((m) => ({ role: m.role, content: m.content })),
+        const chatMessages = [
+          { role: "system", content: SYSTEM_PROMPT + knowledgeCtx },
           { role: "user", content: userMessage },
         ]
 
@@ -344,24 +316,14 @@ export function useTransformers(toolCallbacks: any) {
               setMessages((prev) => {
                 const last = prev[prev.length - 1]
                 if (last && last.role === "assistant") {
-                  return [...prev.slice(0, -1), {
-                    ...last,
-                    content: assistantText,
-                    timestamp: Date.now(),
-                    agent: "chat",
-                  }]
+                  return [...prev.slice(0, -1), { ...last, content: assistantText }]
                 }
-                return [...prev, {
-                  role: "assistant",
-                  content: assistantText,
-                  timestamp: Date.now(),
-                  agent: "chat",
-                }]
+                return [...prev, { role: "assistant", content: assistantText, timestamp: Date.now(), agent: "chat" }]
               })
             },
           })
 
-          await generatorRef.current(currentMessages, {
+          await generatorRef.current(chatMessages, {
             max_new_tokens: 256,
             temperature: 0.7,
             streamer,
@@ -372,29 +334,14 @@ export function useTransformers(toolCallbacks: any) {
           console.error("Generation error:", err)
           setMessages((prev) => [
             ...prev,
-            { role: "assistant", content: "Oops, something went wrong. Try again?", timestamp: Date.now(), agent: "error" },
+            { role: "assistant", content: "Oops, generation failed. Try again?", timestamp: Date.now(), agent: "error" },
           ])
           setStatus("ready")
         }
-      } else {
-        // Offline fallback
-        const fallbackResponse = handleKnowledge(userMessage)
-        const response = fallbackResponse
-          ? `⚡ AI model offline. Using knowledge base:\n${fallbackResponse}`
-          : "⚡ AI model offline. Ask me about awa's projects or use /search <query>"
-
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: response, timestamp: Date.now(), agent: "offline" },
-        ])
       }
     },
-    [status, modelReady, modelInfo, messages, handleCommand, handleToolUse, handleKnowledge, loadModel]
+    [modelReady, handleCommand, handleToolUse, handleKnowledge, loadModel]
   )
-
-  const addMessage = useCallback((msg: Message) => {
-    setMessages((prev) => [...prev, msg])
-  }, [])
 
   const clearMessages = useCallback(() => {
     setMessages([])
@@ -408,7 +355,6 @@ export function useTransformers(toolCallbacks: any) {
     error,
     loadModel,
     sendMessage,
-    addMessage,
     clearMessages,
     modelReady,
   }

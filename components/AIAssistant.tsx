@@ -1,17 +1,13 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { MessageCircle, X, Send, Loader2, Bot, Sparkles, Terminal, Zap } from "lucide-react"
+import { MessageCircle, X, Send, Loader2, Bot, Terminal, Zap } from "lucide-react"
 import { useTransformers } from "@/hooks/use-transformers"
 import { AIMessage } from "@/components/AIMessage"
 import { AITypingIndicator } from "@/components/AITypingIndicator"
 import { MobileToggle } from "@/components/MobileToggle"
-import {
-  SUGGESTED_PROMPTS,
-  WELCOME_MESSAGE,
-  UNSUPPORTED_MESSAGE,
-} from "@/lib/assistant-context"
+import { SUGGESTED_PROMPTS, WELCOME_MESSAGE } from "@/lib/assistant-context"
 
 interface AIAssistantProps {
   onNavigate: (tab: string) => void
@@ -20,7 +16,8 @@ interface AIAssistantProps {
 }
 
 export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssistantProps) {
-  const toolCallbacks = {
+  // Stable callbacks with useMemo
+  const toolCallbacks = useMemo(() => ({
     navigate: onNavigate,
     scrollToSection: (section: string) => {
       document.getElementById(section)?.scrollIntoView({ behavior: "smooth" })
@@ -45,7 +42,7 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
     copyToClipboard: (text: string) => navigator.clipboard.writeText(text),
     openTerminal: onOpenTerminal,
     setChatOpen: (open: boolean) => setIsOpen(open),
-  }
+  }), [onNavigate, onOpenTerminal])
 
   const { status, progress, messages, modelInfo, error, loadModel, sendMessage, clearMessages } =
     useTransformers(toolCallbacks)
@@ -57,29 +54,30 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const welcomeSentRef = useRef(false)
 
   // Check first visit
   useEffect(() => {
-    const visited = localStorage.getItem("ai-assistant-visited-v3")
+    const visited = localStorage.getItem("ai-assistant-visited-v4")
     if (!visited) {
-      localStorage.setItem("ai-assistant-visited-v3", "true")
+      localStorage.setItem("ai-assistant-visited-v4", "true")
       setIsOpen(true)
       setHasOpened(true)
     }
   }, [])
 
-  // Auto welcome message - works even without model
+  // Auto welcome message - stable, no loop
   useEffect(() => {
-    if (isOpen && hasOpened && messages.length === 0) {
-      // Add welcome message after a short delay
+    if (isOpen && hasOpened && !welcomeSentRef.current) {
+      welcomeSentRef.current = true
       const timer = setTimeout(() => {
         sendMessage("__welcome__")
-      }, 500)
+      }, 300)
       return () => clearTimeout(timer)
     }
-  }, [isOpen, hasOpened, messages.length, sendMessage])
+  }, [isOpen, hasOpened])
 
-  // Keyboard shortcut Ctrl+Shift+A / Cmd+Shift+A
+  // Keyboard shortcut
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "A") {
@@ -108,12 +106,13 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
     scrollToBottom()
   }, [messages, scrollToBottom])
 
+  // Send message - stable
   const handleSend = useCallback(() => {
     const text = inputValue.trim()
-    if (!text || status === "generating") return
+    if (!text) return
     setInputValue("")
     sendMessage(text)
-  }, [inputValue, status, sendMessage])
+  }, [inputValue, sendMessage])
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -127,25 +126,19 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
 
   const handleSuggestion = useCallback(
     (prompt: string) => {
-      if (status === "generating") return
       sendMessage(prompt)
     },
-    [status, sendMessage]
+    [sendMessage]
   )
 
   const isLoading = status === "loading"
   const isGenerating = status === "generating"
-  const isUnsupported = status === "unsupported"
   const isError = status === "error"
-  const isOffline = status === "offline"
-  const isIdle = status === "idle"
-
-  // Input is enabled when: idle, ready, error, offline
-  const inputEnabled = !isGenerating && !isLoading
+  const isUnsupported = status === "unsupported"
 
   return (
     <>
-      {/* Mobile Toggle Buttons */}
+      {/* Mobile Toggle */}
       <MobileToggle
         onOpenTerminal={onOpenTerminal}
         onOpenChat={() => {
@@ -210,34 +203,30 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
                   <h3 className="text-sm font-semibold text-[#e6edf3]">OpceanBot</h3>
                   <p className="text-[10px] text-[#8b949e]">
                     {isLoading 
-                      ? `Loading ${modelInfo?.label || "AI"}...` 
-                      : isOffline 
-                        ? "⚡ Offline mode"
-                        : isError
-                          ? "⚠️ Error"
+                      ? "Loading " + (modelInfo?.label || "AI") + "..." 
+                      : isError
+                        ? "AI failed - offline mode"
+                        : isGenerating
+                          ? "Thinking..."
                           : "AI Assistant"}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                {/* Terminal quick button */}
                 <button
-                  onClick={() => {
-                    onOpenTerminal()
-                  }}
+                  onClick={onOpenTerminal}
                   className="p-1.5 rounded-lg hover:bg-[#30363d] text-[#8b949e] 
                              hover:text-[#3fb950] transition-colors md:hidden"
-                  title="Open Terminal"
+                  title="Terminal"
                 >
                   <Terminal className="w-4 h-4" />
                 </button>
-                {/* Clear chat */}
                 {messages.length > 0 && (
                   <button
-                    onClick={() => clearMessages()}
+                    onClick={clearMessages}
                     className="p-1.5 rounded-lg hover:bg-[#30363d] text-[#8b949e] 
                                hover:text-[#f0883e] transition-colors"
-                    title="Clear chat"
+                    title="Clear"
                   >
                     <Zap className="w-4 h-4" />
                   </button>
@@ -252,85 +241,67 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
               </div>
             </div>
 
-            {/* Status bar (shows loading/error) */}
+            {/* Loading bar */}
             {isLoading && (
               <div className="px-4 py-2 bg-[#161b22] border-b border-[#30363d] flex-shrink-0">
                 <div className="flex items-center gap-3">
-                  <Loader2 className="w-4 h-4 text-[#388bfd] animate-spin" />
-                  <div className="flex-1">
+                  <Loader2 className="w-4 h-4 text-[#388bfd] animate-spin flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
                     <div className="flex justify-between text-xs text-[#8b949e] mb-1">
-                      <span>Loading {modelInfo?.label} ({modelInfo?.size})</span>
+                      <span className="truncate">{modelInfo?.label} ({modelInfo?.size})</span>
                       <span>{progress}%</span>
                     </div>
                     <div className="w-full h-1.5 bg-[#21262d] rounded-full overflow-hidden">
                       <motion.div
                         className="h-full bg-gradient-to-r from-[#388bfd] to-[#1f6feb]"
                         initial={{ width: 0 }}
-                        animate={{ width: `${progress}%` }}
+                        animate={{ width: progress + "%" }}
                         transition={{ duration: 0.3 }}
                       />
                     </div>
                   </div>
                 </div>
                 <p className="text-[10px] text-[#8b949e] mt-1">
-                  ⏳ This can take 1-2 minutes. You can chat below while waiting!
+                  You can chat while waiting! Commands work without AI.
                 </p>
               </div>
             )}
 
+            {/* Error bar */}
             {isError && (
               <div className="px-4 py-2 bg-[#da3633]/10 border-b border-[#da3633]/30 flex-shrink-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm">⚠️</span>
-                  <div className="flex-1">
-                    <p className="text-xs text-[#f85149] font-medium">AI model failed to load</p>
-                    <p className="text-[10px] text-[#8b949e]">{error || "Unknown error"}</p>
+                  <span className="text-sm">!</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-[#f85149] font-medium">AI model failed</p>
+                    <p className="text-[10px] text-[#8b949e] truncate">{error || "Unknown error"}</p>
                   </div>
-                  <div className="flex gap-1">
-                    <button
-                      onClick={() => loadModel(true)}
-                      className="px-2 py-1 bg-[#388bfd] text-white rounded text-[10px] hover:bg-[#1f6feb] transition-colors"
-                    >
-                      Retry
-                    </button>
-                    <button
-                      onClick={() => {
-                        // Set offline mode by resetting
-                        loadModel()
-                      }}
-                      className="px-2 py-1 bg-[#21262d] text-[#8b949e] border border-[#30363d] rounded text-[10px] hover:bg-[#30363d] transition-colors"
-                    >
-                      Offline
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {isUnsupported && (
-              <div className="px-4 py-2 bg-[#f0883e]/10 border-b border-[#f0883e]/30 flex-shrink-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">😿</span>
-                  <p className="text-xs text-[#f0883e]">WebGPU not available</p>
                   <button
-                    onClick={() => {
-                      // Try offline
-                    }}
-                    className="px-2 py-1 bg-[#388bfd] text-white rounded text-[10px] hover:bg-[#1f6feb] transition-colors"
+                    onClick={() => loadModel(true)}
+                    className="px-2 py-1 bg-[#388bfd] text-white rounded text-[10px] 
+                               hover:bg-[#1f6feb] transition-colors flex-shrink-0"
                   >
-                    Offline mode
+                    Retry
                   </button>
                 </div>
               </div>
             )}
 
-            {/* Messages Area */}
+            {/* Unsupported bar */}
+            {isUnsupported && (
+              <div className="px-4 py-2 bg-[#f0883e]/10 border-b border-[#f0883e]/30 flex-shrink-0">
+                <p className="text-xs text-[#f0883e]">
+                  WebGPU not available. Commands and knowledge base still work!
+                </p>
+              </div>
+            )}
+
+            {/* Messages */}
             <div
               ref={messagesContainerRef}
               onScroll={handleScroll}
               className="flex-1 overflow-y-auto px-4 py-3 space-y-3"
             >
-              {/* Messages */}
               {messages.length > 0 ? (
                 <>
                   {messages.map((msg, i) => (
@@ -343,27 +314,26 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
                       toolUsed={msg.toolUsed}
                     />
                   ))}
-                  {isGenerating && (
-                    <AITypingIndicator />
-                  )}
+                  {isGenerating && <AITypingIndicator />}
                   <div ref={messagesEndRef} />
                 </>
               ) : (
                 <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#388bfd]/20 to-[#1f6feb]/20 flex items-center justify-center">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#388bfd]/20 to-[#1f6feb]/20 
+                                  flex items-center justify-center">
                     <Bot className="w-8 h-8 text-[#388bfd]" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-[#e6edf3]">Hey! owa aguita :3</p>
+                    <p className="text-sm font-medium text-[#e6edf3]">{WELCOME_MESSAGE}</p>
                     <p className="text-xs text-[#8b949e] mt-1 max-w-[250px]">
-                      Ask me anything about awa's projects, or use commands like /help
+                      Ask about awa's projects, or try /help for commands
                     </p>
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Scroll to bottom button */}
+            {/* Scroll button */}
             <AnimatePresence>
               {showScrollButton && (
                 <motion.button
@@ -371,9 +341,8 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   onClick={scrollToBottom}
-                  className="absolute bottom-20 right-4 z-10 p-2 rounded-full bg-[#21262d] 
-                             border border-[#30363d] text-[#8b949e] hover:text-[#e6edf3]
-                             shadow-lg"
+                  className="absolute bottom-24 right-4 z-10 p-2 rounded-full bg-[#21262d] 
+                             border border-[#30363d] text-[#8b949e] hover:text-[#e6edf3] shadow-lg"
                 >
                   <MessageCircle className="w-4 h-4" />
                 </motion.button>
@@ -387,11 +356,9 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
                   <button
                     key={prompt}
                     onClick={() => handleSuggestion(prompt)}
-                    disabled={isGenerating}
                     className="px-3 py-1.5 text-xs rounded-full border border-[#30363d] 
                                text-[#8b949e] hover:bg-[#388bfd] hover:text-white 
-                               hover:border-[#388bfd] transition-all disabled:opacity-50
-                               disabled:cursor-not-allowed cursor-pointer"
+                               hover:border-[#388bfd] transition-all cursor-pointer"
                   >
                     {prompt}
                   </button>
@@ -399,7 +366,7 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
               </div>
             )}
 
-            {/* Input Area - Always enabled except when generating */}
+            {/* Input */}
             <div className="px-4 py-3 border-t border-[#30363d] bg-[#161b22]/80 flex-shrink-0">
               <div className="flex items-end gap-2">
                 <textarea
@@ -408,10 +375,10 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={isLoading 
-                    ? "Loading AI... you can still chat!" 
+                    ? "Chat works while loading..." 
                     : isError 
-                      ? "Chat works! AI model failed..."
-                      : "Ask me anything... (try /help)"
+                      ? "Chat works! AI failed..."
+                      : "Ask anything... (try /help)"
                   }
                   disabled={isGenerating}
                   rows={1}
@@ -434,8 +401,8 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
               </div>
               <p className="text-[10px] text-[#8b949e] mt-1.5 text-center">
                 {isLoading 
-                  ? "⏳ Model loading in background... Chat works without AI!"
-                  : "Runs 100% on your device. No cloud, no servers. • Ctrl+Shift+A"
+                  ? "Model loading... Commands work now!"
+                  : "100% local. No cloud. Ctrl+Shift+A to toggle"
                 }
               </p>
             </div>

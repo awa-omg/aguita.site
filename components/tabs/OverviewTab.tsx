@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { RepoCard } from "@/components/RepoCard"
+import { motion } from "framer-motion"
 
 const pinnedRepos = [
   {
@@ -73,6 +74,127 @@ const milestones = [
   },
 ]
 
+function AnimatedCounter({ target, duration = 2, color }: { target: number | string; duration?: number; color: string }) {
+  const [count, setCount] = useState(0)
+  const ref = useRef<HTMLDivElement>(null)
+  const [hasAnimated, setHasAnimated] = useState(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true)
+          const targetNum = typeof target === 'string' ? parseInt(target.replace(/\D/g, '')) || 0 : target
+          const startTime = Date.now()
+          const endTime = startTime + duration * 1000
+          
+          const animate = () => {
+            const now = Date.now()
+            const progress = Math.min((now - startTime) / (duration * 1000), 1)
+            const easeOut = 1 - Math.pow(1 - progress, 3)
+            setCount(Math.floor(easeOut * targetNum))
+            
+            if (now < endTime) {
+              requestAnimationFrame(animate)
+            } else {
+              setCount(targetNum)
+            }
+          }
+          
+          requestAnimationFrame(animate)
+        }
+      },
+      { threshold: 0.5 }
+    )
+
+    if (ref.current) {
+      observer.observe(ref.current)
+    }
+
+    return () => observer.disconnect()
+  }, [target, duration, hasAnimated])
+
+  const displayValue = typeof target === 'string' && target.includes('+') 
+    ? `${count}+` 
+    : count
+
+  return (
+    <div ref={ref} className="text-2xl font-bold font-mono" style={{ color }}>
+      {displayValue}
+    </div>
+  )
+}
+
+function StatsHero() {
+  const stats = [
+    { label: "Models", value: "20+", raw: 20, color: "#a371f7" },
+    { label: "Repos", value: "4", raw: 4, color: "#3fb950" },
+    { label: "Papers", value: "3", raw: 3, color: "#f78166" },
+    { label: "Isolation Levels", value: "12", raw: 12, color: "#388bfd" },
+  ]
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      {stats.map((stat, i) => (
+        <motion.div
+          key={stat.label}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.1, duration: 0.5 }}
+          className="p-4 border border-[#30363d] rounded-md bg-[#0d1117]/80 hover:border-[#388bfd]/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(56,139,253,0.1)] cursor-pointer group"
+        >
+          <AnimatedCounter target={stat.value} color={stat.color} />
+          <div className="text-xs text-[#8b949e] mt-1 group-hover:text-[#e6edf3] transition-colors">
+            {stat.label}
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
+function Timeline() {
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  return (
+    <div className="mb-6">
+      <h2 className="text-base text-[#e6edf3] mb-4 font-semibold">Timeline</h2>
+      <div className="border border-[#30363d] rounded-md p-6 bg-[#0d1117]">
+        <div className="relative">
+          <div className="absolute left-[7px] top-2 bottom-2 w-[2px] bg-[#30363d]" />
+          <ul className="space-y-6">
+            {milestones.map((milestone, i) => (
+              <motion.li 
+                key={i} 
+                className="relative pl-6"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                onViewportEnter={() => setActiveIndex(i)}
+              >
+                <motion.div 
+                  className="absolute left-0 top-1.5 w-4 h-4 rounded-full border-2 border-[#30363d] bg-[#0d1117]"
+                  animate={{
+                    borderColor: activeIndex >= i ? '#388bfd' : '#30363d',
+                    backgroundColor: activeIndex >= i ? '#388bfd' : '#0d1117',
+                  }}
+                  transition={{ duration: 0.3 }}
+                />
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="text-xs font-mono font-semibold text-[#388bfd]">{milestone.year}</span>
+                  <span className="text-sm font-semibold text-[#e6edf3]">{milestone.title}</span>
+                </div>
+                <p className="text-xs text-[#8b949e] leading-relaxed">{milestone.description}</p>
+              </motion.li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // Static contribution pattern
 const contributionPattern = "0123401230123012340123012340123401230123012340123012340123401230123012340123012340123401234012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401234012340123"
 
@@ -98,62 +220,16 @@ function ContributionGraph() {
   return (
     <div className="grid grid-cols-[repeat(53,1fr)] gap-[3px]">
       {contributionPattern.slice(0, 371).split("").map((level, i) => (
-        <div
+        <motion.div
           key={i}
           className="aspect-square rounded-sm"
           style={{ backgroundColor: levelColors[parseInt(level)] }}
+          initial={{ opacity: 0, scale: 0 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: i * 0.001, duration: 0.2 }}
         />
       ))}
-    </div>
-  )
-}
-
-function StatsHero() {
-  const stats = [
-    { label: "Models", value: "20+", color: "#388bfd" },
-    { label: "Repos", value: "4", color: "#3fb950" },
-    { label: "Papers", value: "3", color: "#f78166" },
-    { label: "Isolation Levels", value: "12", color: "#a371f7" },
-  ]
-
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      {stats.map((stat) => (
-        <div
-          key={stat.label}
-          className="p-4 border border-[#30363d] rounded-md bg-[#0d1117]/80 hover:border-[#388bfd]/50 transition-all hover:shadow-[0_0_10px_rgba(56,139,253,0.1)]"
-        >
-          <div className="text-2xl font-bold font-mono" style={{ color: stat.color }}>
-            {stat.value}
-          </div>
-          <div className="text-xs text-[#8b949e] mt-1">{stat.label}</div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function Timeline() {
-  return (
-    <div className="mb-6">
-      <h2 className="text-base text-[#e6edf3] mb-4">Timeline</h2>
-      <div className="border border-[#30363d] rounded-md p-6 bg-[#0d1117]">
-        <div className="relative">
-          <div className="absolute left-[7px] top-2 bottom-2 w-[2px] bg-[#30363d]" />
-          <ul className="space-y-6">
-            {milestones.map((milestone, i) => (
-              <li key={i} className="relative pl-6">
-                <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full border-2 border-[#30363d] bg-[#0d1117]" />
-                <div className="flex items-center gap-3 mb-1">
-                  <span className="text-xs font-mono font-semibold text-[#388bfd]">{milestone.year}</span>
-                  <span className="text-sm font-semibold text-[#e6edf3]">{milestone.title}</span>
-                </div>
-                <p className="text-xs text-[#8b949e] leading-relaxed">{milestone.description}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
     </div>
   )
 }
@@ -167,21 +243,26 @@ export function OverviewTab() {
       {/* Pinned repos section */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base text-[#e6edf3]">Pinned</h2>
-          <a href="#" className="text-xs text-[#8b949e] hover:text-[#388bfd]">
-            Customize your pins
-          </a>
+          <h2 className="text-base text-[#e6edf3] font-semibold">Pinned</h2>
+          <span className="text-xs text-[#8b949e]">Customize your pins</span>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {pinnedRepos.map((repo) => (
-            <RepoCard key={repo.name} {...repo} />
+          {pinnedRepos.map((repo, i) => (
+            <motion.div
+              key={repo.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1, duration: 0.5 }}
+            >
+              <RepoCard {...repo} />
+            </motion.div>
           ))}
         </div>
       </div>
 
       {/* Contribution graph */}
       <div className="mb-6">
-        <h2 className="text-base text-[#e6edf3] mb-4">Contribution activity</h2>
+        <h2 className="text-base text-[#e6edf3] mb-4 font-semibold">Contribution activity</h2>
         <div className="border border-[#30363d] rounded-md p-4 bg-[#0d1117]">
           <div className="flex items-center justify-between mb-4">
             <span className="text-sm text-[#8b949e]">Contributions in the last year</span>

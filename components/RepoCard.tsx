@@ -24,7 +24,7 @@ export function RepoCard({
   isPublic = true,
 }: RepoCardProps) {
   return (
-    <div className="p-4 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#388bfd]/50 hover:shadow-[0_0_15px_rgba(56,139,253,0.15)] hover:bg-[#161b22] transition-all duration-300">
+    <div className="p-4 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#388bfd]/50 hover:shadow-[0_0_15px_rgba(56,139,253,0.15)] hover:bg-[#161b22] transition-all duration-300 card-glow">
       <div className="flex items-start justify-between gap-4 mb-2">
         <div className="flex items-center gap-2 min-w-0">
           <svg className="w-4 h-4 text-[#8b949e] flex-shrink-0" viewBox="0 0 16 16" fill="currentColor">
@@ -34,7 +34,7 @@ export function RepoCard({
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#388bfd] font-semibold text-sm hover:underline truncate relative group"
+            className="text-[#388bfd] font-semibold text-sm hover:underline truncate hover-underline"
           >
             {name}
           </a>

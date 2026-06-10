@@ -1,4 +1,5 @@
 import { ExternalLink, Box, Database, FileText, Zap, Shield, Heart, Globe, Cpu, CheckCircle } from "lucide-react"
+import { motion } from "framer-motion"
 
 const products = [
   {
@@ -120,10 +121,13 @@ export function OpceanAITab() {
           Infrastructure
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {products.map((product) => (
-            <div
+          {products.map((product, i) => (
+            <motion.div
               key={product.name}
-              className="p-4 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#388bfd]/50 hover:shadow-[0_0_10px_rgba(56,139,253,0.1)] transition-all"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1, duration: 0.4 }}
+              className="p-4 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#388bfd]/50 hover:shadow-[0_0_10px_rgba(56,139,253,0.1)] transition-all card-glow"
             >
               <div className="flex items-center gap-2 mb-3">
                 <product.icon size={16} style={{ color: product.color }} />
@@ -145,7 +149,7 @@ export function OpceanAITab() {
                   </div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -157,20 +161,23 @@ export function OpceanAITab() {
           AI & Models
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {aiModels.map((model) => (
-            <a
+          {aiModels.map((model, i) => (
+            <motion.a
               key={model.name}
               href={model.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-4 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#a371f7]/50 hover:shadow-[0_0_10px_rgba(163,113,247,0.1)] transition-all block"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.4 }}
+              className="p-4 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#a371f7]/50 hover:shadow-[0_0_10px_rgba(163,113,247,0.1)] transition-all block card-glow-purple"
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-semibold text-[#e6edf3]">{model.name}</span>
                 <ExternalLink size={12} className="text-[#8b949e]" />
               </div>
               <p className="text-xs text-[#8b949e]">{model.description}</p>
-            </a>
+            </motion.a>
           ))}
         </div>
       </div>
@@ -183,13 +190,16 @@ export function OpceanAITab() {
             Datasets
           </h3>
           <div className="space-y-3">
-            {datasets.map((dataset) => (
-              <a
+            {datasets.map((dataset, i) => (
+              <motion.a
                 key={dataset.name}
                 href={dataset.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#3fb950]/50 hover:shadow-[0_0_10px_rgba(63,185,80,0.1)] transition-all"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.05, duration: 0.4 }}
+                className="flex items-center gap-3 p-3 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#3fb950]/50 hover:shadow-[0_0_10px_rgba(63,185,80,0.1)] transition-all card-glow-green"
               >
                 <div className="w-8 h-8 rounded-md bg-[#21262d] flex items-center justify-center flex-shrink-0">
                   <Database size={14} className="text-[#3fb950]" />
@@ -199,7 +209,7 @@ export function OpceanAITab() {
                   <div className="text-xs text-[#8b949e] truncate">{dataset.description}</div>
                 </div>
                 <ExternalLink size={12} className="text-[#8b949e] flex-shrink-0" />
-              </a>
+              </motion.a>
             ))}
           </div>
         </div>
@@ -210,13 +220,16 @@ export function OpceanAITab() {
             Benchmarks
           </h3>
           <div className="space-y-3">
-            {benchmarks.map((benchmark) => (
-              <a
+            {benchmarks.map((benchmark, i) => (
+              <motion.a
                 key={benchmark.name}
                 href={benchmark.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#f78166]/50 hover:shadow-[0_0_10px_rgba(247,129,102,0.1)] transition-all"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.05, duration: 0.4 }}
+                className="flex items-center gap-3 p-3 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#f78166]/50 hover:shadow-[0_0_10px_rgba(247,129,102,0.1)] transition-all card-glow-orange"
               >
                 <div className="w-8 h-8 rounded-md bg-[#21262d] flex items-center justify-center flex-shrink-0">
                   <FileText size={14} className="text-[#f78166]" />
@@ -226,7 +239,7 @@ export function OpceanAITab() {
                   <div className="text-xs text-[#8b949e] truncate">{benchmark.description}</div>
                 </div>
                 <ExternalLink size={12} className="text-[#8b949e] flex-shrink-0" />
-              </a>
+              </motion.a>
             ))}
           </div>
         </div>

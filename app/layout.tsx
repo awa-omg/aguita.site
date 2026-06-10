@@ -9,10 +9,16 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'awa - Full Stack Developer',
-  description: 'Full Stack Developer specializing in AI/ML, distributed systems, and open source software.',
-  keywords: ['developer', 'full stack', 'AI', 'machine learning', 'open source'],
+  title: 'awa - Full Stack Developer & AI Engineer',
+  description: 'Full Stack Developer and AI Engineer. Creator of Doki (OCI containers on Android), Yuuki/Yumo/ELIZA models, and Imprint Theory. Open source advocate and founder of OpceanAI.',
+  keywords: ['developer', 'full stack', 'AI', 'machine learning', 'open source', 'Doki', 'Yuuki', 'OpceanAI'],
   authors: [{ name: 'awa' }],
+  openGraph: {
+    title: 'awa - Full Stack Developer & AI Engineer',
+    description: 'Creator of Doki, Yuuki, and OpceanAI. Open source advocate democratizing AI for everyone.',
+    type: 'website',
+    locale: 'en_US',
+  },
 }
 
 export const viewport: Viewport = {

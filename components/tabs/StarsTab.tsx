@@ -1,6 +1,7 @@
 "use client"
 
 import { Star, GitFork, Circle } from "lucide-react"
+import { motion } from "framer-motion"
 
 const starredRepos = [
   {
@@ -102,8 +103,14 @@ export function StarsTab() {
       </div>
 
       <ul className="divide-y divide-[#21262d]">
-        {starredRepos.map((repo) => (
-          <li key={`${repo.owner}/${repo.name}`} className="py-6">
+        {starredRepos.map((repo, i) => (
+          <motion.li 
+            key={`${repo.owner}/${repo.name}`} 
+            className="py-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05, duration: 0.4 }}
+          >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1 mb-1">
@@ -148,7 +155,7 @@ export function StarsTab() {
                 Starred
               </button>
             </div>
-          </li>
+          </motion.li>
         ))}
       </ul>
     </div>

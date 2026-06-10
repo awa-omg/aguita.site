@@ -1,4 +1,5 @@
 import { Mail, Globe, ExternalLink } from "lucide-react"
+import { motion } from "framer-motion"
 
 // SVG Icons for each platform
 const GitHubIcon = () => (
@@ -70,7 +71,12 @@ const websites = [
 
 export function ContactTab() {
   return (
-    <div className="max-w-2xl">
+    <motion.div 
+      className="max-w-2xl"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
       <p className="text-sm text-[#8b949e] mb-6">
         Get in touch for collaborations, research opportunities, or open source contributions.
       </p>
@@ -157,6 +163,6 @@ export function ContactTab() {
           ))}
         </ul>
       </div>
-    </div>
+    </motion.div>
   )
 }

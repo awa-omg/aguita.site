@@ -1,4 +1,5 @@
 import { FileText, ExternalLink, Calendar } from "lucide-react"
+import { motion } from "framer-motion"
 
 const papers = [
   {
@@ -37,10 +38,13 @@ export function PapersTab() {
       </div>
 
       <ul className="space-y-6">
-        {papers.map((paper) => (
-          <li 
+        {papers.map((paper, i) => (
+          <motion.li 
             key={paper.doi} 
-            className="p-6 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#8b949e] transition-colors"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1, duration: 0.4 }}
+            className="p-6 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#8b949e] transition-colors card-glow"
           >
             <div className="flex items-start gap-4">
               <div className="p-2 bg-[#21262d] rounded-md">
@@ -81,7 +85,7 @@ export function PapersTab() {
                 </div>
               </div>
             </div>
-          </li>
+          </motion.li>
         ))}
       </ul>
     </div>

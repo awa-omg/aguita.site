@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Search, ExternalLink, Database, Box, Rocket } from "lucide-react"
+import { motion } from "framer-motion"
 
 const models = [
   {
@@ -258,10 +259,13 @@ export function ModelsTab() {
               <span className="text-[#8b949e] font-normal">({items.length})</span>
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {items.map((item) => (
-                <div
+              {items.map((item, i) => (
+                <motion.div
                   key={item.name}
-                  className="p-4 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#388bfd]/50 hover:shadow-[0_0_10px_rgba(56,139,253,0.1)] transition-all"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.4 }}
+                  className="p-4 border border-[#30363d] rounded-md bg-[#0d1117] hover:border-[#388bfd]/50 hover:shadow-[0_0_10px_rgba(56,139,253,0.1)] transition-all card-glow"
                 >
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div className="flex items-center gap-2 min-w-0">
@@ -297,7 +301,7 @@ export function ModelsTab() {
                       </span>
                     ))}
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>

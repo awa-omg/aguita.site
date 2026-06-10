@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Search, Star, GitFork, Circle } from "lucide-react"
+import { motion } from "framer-motion"
 
 const repositories = [
   {
@@ -101,8 +102,14 @@ export function RepositoriesTab() {
 
       {/* Repository list */}
       <ul className="divide-y divide-[#21262d]">
-        {filteredRepos.map((repo) => (
-          <li key={repo.name} className="py-6">
+        {filteredRepos.map((repo, i) => (
+          <motion.li 
+            key={repo.name} 
+            className="py-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1, duration: 0.4 }}
+          >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
@@ -146,7 +153,7 @@ export function RepositoriesTab() {
                 Star
               </button>
             </div>
-          </li>
+          </motion.li>
         ))}
       </ul>
     </div>

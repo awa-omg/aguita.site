@@ -1,6 +1,6 @@
 "use client"
 
-import { BookMarked, Package, Star, FileText, Mail } from "lucide-react"
+import { BookMarked, GitBranch, Brain, Star, FileText, Mail, Building2 } from "lucide-react"
 
 interface NavTabsProps {
   activeTab: string
@@ -9,8 +9,10 @@ interface NavTabsProps {
 
 const tabs = [
   { id: "overview", label: "Overview", icon: BookMarked },
-  { id: "repositories", label: "Repositories", icon: Package, count: 4 },
+  { id: "repositories", label: "Repositories", icon: GitBranch, count: 4 },
+  { id: "models", label: "Models", icon: Brain, count: 20 },
   { id: "papers", label: "Papers", icon: FileText, count: 3 },
+  { id: "opceanai", label: "OpceanAI", icon: Building2 },
   { id: "stars", label: "Stars", icon: Star },
   { id: "contact", label: "Contact", icon: Mail },
 ]

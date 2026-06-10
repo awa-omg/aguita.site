@@ -5,34 +5,34 @@ import { RepoCard } from "@/components/RepoCard"
 
 const pinnedRepos = [
   {
-    name: "gitsune",
-    description: "A lightweight, privacy-focused Forgejo fork with enhanced performance and modern UI components.",
+    name: "yuuki-training",
+    description: "Training pipeline for Yuuki-82M — a small language model trained from scratch on a Redmi 12 smartphone with zero cloud budget.",
+    language: "Python",
+    languageColor: "#3572A5",
+    stars: 1,
+    forks: 0,
+    url: "https://github.com/YuuKi-OS/yuuki-training",
+    starUrl: "https://github.com/YuuKi-OS/yuuki-training",
+  },
+  {
+    name: "Doki",
+    description: "Universal container engine — OCI native, Docker & Podman compatible, rootless. Runs on Linux, macOS, and Android via Termux.",
     language: "Go",
     languageColor: "#00ADD8",
-    stars: 42,
-    forks: 8,
-    url: "https://github.com/awa-omg/gitsune",
-    starUrl: "https://github.com/awa-omg/gitsune",
+    stars: 20,
+    forks: 2,
+    url: "https://github.com/OpceanAI/Doki",
+    starUrl: "https://github.com/OpceanAI/Doki",
   },
   {
     name: "NHE",
-    description: "Not Humanity Exam - A benchmark for measuring metacognition and reasoning patterns in large language models.",
+    description: "Not Humanity Exam — A benchmark for measuring metacognition and reasoning patterns in large language models.",
     language: "Python",
     languageColor: "#3572A5",
     stars: 156,
     forks: 23,
     url: "https://huggingface.co/Not-Humanity-Exam",
     starUrl: "https://huggingface.co/Not-Humanity-Exam",
-  },
-  {
-    name: "koe",
-    description: "Decentralized P2P communication protocol with end-to-end encryption and minimal latency.",
-    language: "Rust",
-    languageColor: "#dea584",
-    stars: 89,
-    forks: 12,
-    url: "https://github.com/Koe-chat/koe",
-    starUrl: "https://github.com/Koe-chat/koe",
   },
   {
     name: "OpceanAI",
@@ -44,6 +44,14 @@ const pinnedRepos = [
     url: "https://huggingface.co/OpceanAI",
     starUrl: "https://huggingface.co/OpceanAI",
   },
+]
+
+const milestones = [
+  { year: "2023", title: "Fundación de OpceanAI", description: "Organización open source para democratizar IA e infraestructura" },
+  { year: "2024", title: "Doki v0.1", description: "Contenedores OCI en Android sin root — 13MB binary, 12 isolation levels" },
+  { year: "2025", title: "Yuuki-best", description: "146% improvement en entrenamiento de LLM en Snapdragon 685 (Redmi 12)" },
+  { year: "2025", title: "Papers publicados", description: "Flux, The Imprint Theory, NHE/YHE/BHE Benchmark — DOI en Zenodo" },
+  { year: "2026", title: "Ecosistema completo", description: "Yuuki-3.7, Yumo, ELIZA, ToS, Ixari — 20+ modelos, 4 repos, 3 papers" },
 ]
 
 // Static contribution pattern
@@ -81,9 +89,62 @@ function ContributionGraph() {
   )
 }
 
+function StatsHero() {
+  const stats = [
+    { label: "Models", value: "20+", color: "#388bfd" },
+    { label: "Repos", value: "4", color: "#3fb950" },
+    { label: "Papers", value: "3", color: "#f78166" },
+    { label: "Isolation Levels", value: "12", color: "#a371f7" },
+  ]
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      {stats.map((stat) => (
+        <div
+          key={stat.label}
+          className="p-4 border border-[#30363d] rounded-md bg-[#0d1117]/80 hover:border-[#388bfd]/50 transition-all hover:shadow-[0_0_10px_rgba(56,139,253,0.1)]"
+        >
+          <div className="text-2xl font-bold font-mono" style={{ color: stat.color }}>
+            {stat.value}
+          </div>
+          <div className="text-xs text-[#8b949e] mt-1">{stat.label}</div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function Timeline() {
+  return (
+    <div className="mb-6">
+      <h2 className="text-base text-[#e6edf3] mb-4">Timeline</h2>
+      <div className="border border-[#30363d] rounded-md p-6 bg-[#0d1117]">
+        <div className="relative">
+          <div className="absolute left-[7px] top-2 bottom-2 w-[2px] bg-[#30363d]" />
+          <ul className="space-y-6">
+            {milestones.map((milestone, i) => (
+              <li key={i} className="relative pl-6">
+                <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full border-2 border-[#30363d] bg-[#0d1117]" />
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="text-xs font-mono font-semibold text-[#388bfd]">{milestone.year}</span>
+                  <span className="text-sm font-semibold text-[#e6edf3]">{milestone.title}</span>
+                </div>
+                <p className="text-xs text-[#8b949e] leading-relaxed">{milestone.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function OverviewTab() {
   return (
     <div>
+      {/* Stats Hero */}
+      <StatsHero />
+
       {/* Pinned repos section */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
@@ -118,6 +179,9 @@ export function OverviewTab() {
           </div>
         </div>
       </div>
+
+      {/* Timeline */}
+      <Timeline />
     </div>
   )
 }

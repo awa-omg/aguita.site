@@ -45,7 +45,7 @@ export function ProfileSidebar() {
 
       {/* Bio */}
       <p className="text-[#e6edf3] text-sm mb-4">
-        Full Stack Developer and AI Engineer. Creator of GitSune, YuuKi, Koe, NHE, Flux, and The Imprint Theory. Open source advocate and founder of OpceanAI. Passionate about chess, programming, music, and keeping AI accessible for everyone.
+        Full Stack Developer and AI Engineer. Creator of Doki (OCI containers on Android), ToS (P2P sync), Ixari (140GB multilingual corpus), Yuuki/Yumo/ELIZA models, and Imprint Theory. Open source advocate and founder of OpceanAI. Passionate about chess, programming, music, and democratizing AI for everyone.
       </p>
 
       {/* Follow button / Sponsor */}

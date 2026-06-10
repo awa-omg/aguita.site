@@ -5,44 +5,44 @@ import { Search, Star, GitFork, Circle } from "lucide-react"
 
 const repositories = [
   {
-    name: "gitsune",
-    description: "A lightweight, privacy-focused Forgejo fork with enhanced performance and modern UI components.",
+    name: "yuuki-training",
+    description: "Training pipeline for Yuuki-82M — a small language model trained from scratch on a Redmi 12 smartphone with zero cloud budget.",
+    language: "Python",
+    languageColor: "#3572A5",
+    stars: 1,
+    forks: 0,
+    url: "https://github.com/YuuKi-OS/yuuki-training",
+    updatedAt: "Updated recently",
+  },
+  {
+    name: "Doki",
+    description: "Universal container engine — OCI native, Docker & Podman compatible, rootless. Runs on Linux, macOS, and Android via Termux.",
     language: "Go",
     languageColor: "#00ADD8",
-    stars: 42,
-    forks: 8,
-    url: "https://github.com/awa-omg/gitsune",
-    updatedAt: "Updated 2 days ago",
+    stars: 20,
+    forks: 2,
+    url: "https://github.com/OpceanAI/Doki",
+    updatedAt: "Updated recently",
   },
   {
-    name: "NHE",
-    description: "Not Humanity Exam - A benchmark for measuring metacognition and reasoning patterns in large language models.",
-    language: "Python",
-    languageColor: "#3572A5",
-    stars: 156,
-    forks: 23,
-    url: "https://huggingface.co/Not-Humanity-Exam",
-    updatedAt: "Updated last week",
+    name: "ToS",
+    description: "Translation of Service — an open P2P protocol for moving and synchronizing structured data between any source and any destination in real-time, without a central broker.",
+    language: "Go",
+    languageColor: "#00ADD8",
+    stars: 0,
+    forks: 0,
+    url: "https://github.com/OpceanAI/ToS",
+    updatedAt: "Updated recently",
   },
   {
-    name: "koe-protocol",
-    description: "Decentralized P2P communication protocol with end-to-end encryption and minimal latency.",
-    language: "Rust",
-    languageColor: "#dea584",
-    stars: 89,
-    forks: 12,
-    url: "https://github.com/Koe-chat",
-    updatedAt: "Updated 3 days ago",
-  },
-  {
-    name: "opcean-models",
-    description: "Open source AI models and research. Fine-tuned LLMs for specific tasks and domains.",
-    language: "Python",
-    languageColor: "#3572A5",
-    stars: 234,
-    forks: 45,
-    url: "https://huggingface.co/OpceanAI",
-    updatedAt: "Updated yesterday",
+    name: "Shadow",
+    description: "Local-first CLI for instant codebase intelligence. Point it at a file, folder, or running service and Shadow will tell you what the project does, how files connect, and where the risky parts are.",
+    language: "TypeScript",
+    languageColor: "#3178c6",
+    stars: 0,
+    forks: 0,
+    url: "https://github.com/OpceanAI/Shadow",
+    updatedAt: "Updated recently",
   },
 ]
 
@@ -91,9 +91,10 @@ export function RepositoriesTab() {
           >
             <option value="all">Language</option>
             <option value="Python">Python</option>
-            <option value="Rust">Rust</option>
             <option value="Go">Go</option>
             <option value="TypeScript">TypeScript</option>
+            <option value="C++">C++</option>
+            <option value="Rust">Rust</option>
           </select>
         </div>
       </div>

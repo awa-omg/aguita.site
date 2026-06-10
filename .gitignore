@@ -1,0 +1,35 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build
+.next
+out
+dist
+build
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Debug
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Vercel
+.vercel
+
+# Temporary
+*.tmp
+*.temp

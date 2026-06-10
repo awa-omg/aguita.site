@@ -17,7 +17,12 @@ import { LabTab } from "@/components/tabs/LabTab"
 import { NowTab } from "@/components/tabs/NowTab"
 import { StarsTab } from "@/components/tabs/StarsTab"
 import { ContactTab } from "@/components/tabs/ContactTab"
+import dynamic from "next/dynamic"
 import Lenis from "lenis"
+
+const AIAssistant = dynamic(() => import("@/components/AIAssistant").then((mod) => mod.AIAssistant), {
+  ssr: false,
+})
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("overview")
@@ -170,6 +175,13 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* AI Assistant */}
+      <AIAssistant 
+        onNavigate={handleTabChange}
+        onOpenTerminal={() => setTerminalOpen(true)}
+        terminalOpen={terminalOpen}
+      />
     </div>
   )
 }

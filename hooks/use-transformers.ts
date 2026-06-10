@@ -1,12 +1,13 @@
 "use client"
 
 import { useState, useRef, useCallback, useEffect } from "react"
+import { pipeline, TextStreamer } from "@huggingface/transformers"
 import { SYSTEM_PROMPT } from "@/lib/assistant-context"
 import { searchKnowledge } from "@/lib/assistant-knowledge"
 import { searchWeb } from "@/lib/assistant-web-search"
 import { parseCommand, getHelpText, getRandomJoke } from "@/lib/assistant-commands"
 import { createToolExecutor, detectToolUse, ToolExecutor } from "@/hooks/use-ai-tools"
-import { classifyIntent, AgentResult } from "@/lib/assistant-router"
+import { classifyIntent } from "@/lib/assistant-router"
 
 export type Message = {
   role: "user" | "assistant"
@@ -60,10 +61,11 @@ export function useTransformers(toolCallbacks: any) {
   const [messages, setMessages] = useState<Message[]>([])
   const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [workerReady, setWorkerReady] = useState(false)
-  const workerRef = useRef<Worker | null>(null)
+  const [modelReady, setModelReady] = useState(false)
+  const generatorRef = useRef<any>(null)
   const toolExecutorRef = useRef<ToolExecutor | null>(null)
   const isInitialized = useRef(false)
+  const loadingTimeout = useRef<NodeJS.Timeout | null>(null)
 
   // Initialize tool executor
   useEffect(() => {
@@ -72,71 +74,12 @@ export function useTransformers(toolCallbacks: any) {
     }
   }, [toolCallbacks])
 
-  // Initialize Web Worker
+  // Clear timeout on unmount
   useEffect(() => {
-    if (typeof window === "undefined") return
-    if (workerRef.current) return
-
-    const worker = new Worker(new URL("/worker.js", window.location.href), {
-      type: "module",
-    })
-
-    worker.addEventListener("message", (e) => {
-      const { type, data, status: workerStatus, error: workerError, token, response } = e.data
-
-      if (type === "status") {
-        if (workerStatus === "initiate") {
-          setStatus("loading")
-        } else if (workerStatus === "ready") {
-          setStatus("ready")
-          setWorkerReady(true)
-          setProgress(100)
-        }
-      }
-
-      if (type === "progress") {
-        if (data?.status === "progress" && data?.total) {
-          const percent = Math.round((data.loaded / data.total) * 100)
-          setProgress(percent)
-        }
-      }
-
-      if (type === "token") {
-        setMessages((prev) => {
-          const last = prev[prev.length - 1]
-          if (last && last.role === "assistant") {
-            return [...prev.slice(0, -1), { ...last, content: response }]
-          }
-          return [...prev, { role: "assistant", content: response, timestamp: Date.now(), agent: "chat" }]
-        })
-      }
-
-      if (type === "complete") {
-        setStatus("ready")
-      }
-
-      if (type === "error") {
-        console.error("Worker error:", workerError)
-        setError(workerError)
-        setStatus("error")
-        // Fallback to offline mode
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: "⚡ Model error. Switching to offline mode. I'll use my knowledge base instead!",
-            timestamp: Date.now(),
-            agent: "system",
-          },
-        ])
-      }
-    })
-
-    workerRef.current = worker
-
     return () => {
-      worker.terminate()
-      workerRef.current = null
+      if (loadingTimeout.current) {
+        clearTimeout(loadingTimeout.current)
+      }
     }
   }, [])
 
@@ -153,17 +96,50 @@ export function useTransformers(toolCallbacks: any) {
     setModelInfo(detected)
     setStatus("loading")
     setProgress(0)
+    setError(null)
+
+    // Timeout: if loading takes >30s, show message
+    if (loadingTimeout.current) clearTimeout(loadingTimeout.current)
+    loadingTimeout.current = setTimeout(() => {
+      setMessages((prev) => {
+        // Only add if still loading
+        const lastLoading = prev.find(m => m.role === "assistant" && m.content.includes("Still downloading"))
+        if (!lastLoading && status === "loading") {
+          return [...prev, {
+            role: "assistant",
+            content: "⏳ Still downloading... This can take 1-2 minutes on mobile. You can chat with my knowledge base while waiting!",
+            timestamp: Date.now(),
+            agent: "system",
+          }]
+        }
+        return prev
+      })
+    }, 15000)
 
     try {
-      // Send message to worker to load model
-      workerRef.current?.postMessage({
-        type: "load",
-        payload: { model: detected.model },
+      const generator = await pipeline("text-generation", detected.model, {
+        dtype: "q4",
+        device: "webgpu",
+        progress_callback: (x: any) => {
+          if (x.status === "progress" && x.total) {
+            const percent = Math.round((x.loaded / x.total) * 100)
+            setProgress(percent)
+          } else if (x.status === "done") {
+            setProgress(100)
+          }
+        },
       })
+
+      generatorRef.current = generator
+      setStatus("ready")
+      setModelReady(true)
+      setProgress(100)
+      if (loadingTimeout.current) clearTimeout(loadingTimeout.current)
     } catch (err: any) {
       console.error("Failed to load model:", err)
       setError(err.message || "Failed to load AI model")
-      setStatus("offline")
+      setStatus("error")
+      if (loadingTimeout.current) clearTimeout(loadingTimeout.current)
     }
   }, [])
 
@@ -313,14 +289,14 @@ export function useTransformers(toolCallbacks: any) {
       }
 
       // Chat (requires model)
-      if (!workerRef.current || !workerReady) {
+      if (!generatorRef.current || !modelReady) {
         // Try to load model if not loaded
         if (status === "idle" || status === "error") {
           await loadModel()
         }
 
         // If still not ready, use knowledge fallback
-        if (!workerReady) {
+        if (!generatorRef.current) {
           const fallbackResponse = handleKnowledge(userMessage)
           const response = fallbackResponse
             ? `⚡ AI model offline. Using knowledge base:\n${fallbackResponse}`
@@ -335,7 +311,7 @@ export function useTransformers(toolCallbacks: any) {
       }
 
       // Use model for chat
-      if (workerRef.current && workerReady) {
+      if (generatorRef.current && modelReady) {
         setStatus("generating")
 
         const recentMessages = messages.slice(-4)
@@ -348,13 +324,49 @@ export function useTransformers(toolCallbacks: any) {
           { role: "user", content: userMessage },
         ]
 
-        workerRef.current.postMessage({
-          type: "generate",
-          payload: {
-            messages: currentMessages,
-            model: modelInfo?.model || "onnx-community/LFM2.5-350M-ONNX",
-          },
-        })
+        let assistantText = ""
+
+        try {
+          const streamer = new TextStreamer(generatorRef.current.tokenizer, {
+            skip_prompt: true,
+            skip_special_tokens: true,
+            callback_function: (token: string) => {
+              assistantText += token
+              setMessages((prev) => {
+                const last = prev[prev.length - 1]
+                if (last && last.role === "assistant") {
+                  return [...prev.slice(0, -1), {
+                    ...last,
+                    content: assistantText,
+                    timestamp: Date.now(),
+                    agent: "chat",
+                  }]
+                }
+                return [...prev, {
+                  role: "assistant",
+                  content: assistantText,
+                  timestamp: Date.now(),
+                  agent: "chat",
+                }]
+              })
+            },
+          })
+
+          await generatorRef.current(currentMessages, {
+            max_new_tokens: 256,
+            temperature: 0.7,
+            streamer,
+          })
+
+          setStatus("ready")
+        } catch (err: any) {
+          console.error("Generation error:", err)
+          setMessages((prev) => [
+            ...prev,
+            { role: "assistant", content: "Oops, something went wrong. Try again?", timestamp: Date.now(), agent: "error" },
+          ])
+          setStatus("ready")
+        }
       } else {
         // Offline fallback
         const fallbackResponse = handleKnowledge(userMessage)
@@ -368,7 +380,7 @@ export function useTransformers(toolCallbacks: any) {
         ])
       }
     },
-    [status, workerReady, modelInfo, messages, handleCommand, handleToolUse, handleKnowledge, loadModel]
+    [status, modelReady, modelInfo, messages, handleCommand, handleToolUse, handleKnowledge, loadModel]
   )
 
   const addMessage = useCallback((msg: Message) => {
@@ -389,6 +401,6 @@ export function useTransformers(toolCallbacks: any) {
     sendMessage,
     addMessage,
     clearMessages,
-    workerReady,
+    modelReady,
   }
 }

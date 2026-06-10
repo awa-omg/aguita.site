@@ -47,7 +47,7 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
     setChatOpen: (open: boolean) => setIsOpen(open),
   }
 
-  const { status, progress, messages, modelInfo, loadModel, sendMessage, addMessage, clearMessages, workerReady } =
+  const { status, progress, messages, modelInfo, loadModel, sendMessage, addMessage, clearMessages, modelReady } =
     useTransformers(toolCallbacks)
   
   const [isOpen, setIsOpen] = useState(false)

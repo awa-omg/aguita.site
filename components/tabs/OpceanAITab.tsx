@@ -239,7 +239,7 @@ export function OpceanAITab() {
           Philosophy
         </h3>
         <blockquote className="text-sm text-[#e6edf3] italic border-l-2 border-[#f78166] pl-4 mb-4">
-          "Si tienes que pagar por algo, ¿por qué no hacerlo tú mismo y gratis?"
+          "If you have to pay for something, why not build it yourself for free?"
         </blockquote>
         <ul className="space-y-2 text-sm text-[#8b949e]">
           <li className="flex items-start gap-2">

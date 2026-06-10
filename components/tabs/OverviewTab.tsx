@@ -49,27 +49,27 @@ const pinnedRepos = [
 const milestones = [
   {
     year: "2023",
-    title: "Orígenes personales",
+    title: "Personal Origins",
     description:
-      "Agua comienza un proyecto personal llamado 'Ocean' para crear bots de Telegram y Discord. El código es un monolito main.py de más de 11,000 líneas. Sin conocer Docker ni Kubernetes, usa 'vibe coding' para prototipos. Descubre Podroid (QEMU en Android) pero lo encuentra lento. Empieza a investigar proot, syscalls y namespaces.",
+      "Agua starts a personal project called 'Ocean' to create Telegram and Discord bots. The code is a main.py monolith of over 11,000 lines. Without knowing Docker or Kubernetes, he uses 'vibe coding' for prototypes. Discovers Podroid (QEMU on Android) but finds it too slow. Begins researching proot, syscalls, and namespaces.",
   },
   {
     year: "2024",
-    title: "Nacimiento de OpceanAI y primeros pasos de Doki",
+    title: "Birth of OpceanAI and First Steps of Doki",
     description:
-      "5 de junio: Fundación oficial de OpceanAI. El proyecto abandona su etapa de repositorio personal y se convierte en una organización abierta. Agua diseña la primera arquitectura de Doki en Go — un runtime OCI rootless específico para Android. Comienza a escribir código y probar en Termux.",
+      "June 5: Official founding of OpceanAI. The project leaves its personal repository stage and becomes an open organization. Agua designs the first architecture of Doki in Go — a rootless OCI runtime specifically for Android. Begins writing code and testing in Termux.",
   },
   {
     year: "2025",
-    title: "Era del laboratorio (IA y experimentación)",
+    title: "Lab Era (AI and Experimentation)",
     description:
-      "Enero – noviembre: Primeros entrenamientos de IA en un Snapdragon 685. Las primeras pruebas son lentas (2.66 años estimados). Abandona el enfoque tradicional y explora fine-tuning total y arquitecturas ligeras. Diciembre: Primer prototipo funcional de Yuuki v0.1, basado en GPT-2 de 82M parámetros. Entrenado completamente en el móvil con cero costo en la nube — prueba de concepto de la metodología 'presupuesto cero'.",
+      "January – November: First AI training attempts on a Snapdragon 685. Initial tests are slow (2.66 years estimated). Abandons the traditional approach and explores full fine-tuning and lightweight architectures. December: First functional prototype of Yuuki v0.1, based on GPT-2 with 82M parameters. Trained entirely on a mobile phone with zero cloud cost — proof of concept for the 'zero budget' methodology.",
   },
   {
     year: "2026",
-    title: "Explosión de desarrollo y lanzamientos",
+    title: "Development Explosion and Releases",
     description:
-      "Enero: Se entrena el primer modelo 'Iris' (renombrado a Yuuki). Marzo – abril: Aceleración del desarrollo de Doki. Reescritura de proot (doki-proot), DNS interno, primeros runners. 4 de mayo: Primer commit público de Doki en GitHub. 4 de junio: Lanzamiento de Doki v0.9.2 estable con DokiLink-Lite y 190+ bugs corregidos. 5 de junio: Segundo aniversario de OpceanAI. 6 de junio: Lanzamiento de Doki v0.9.3 con 12 runners, 244 comandos CLI y soporte ARMv7. Previsto para agosto: Doki 0.10 con Podman, Kubernetes, macOS nativo y doki-os.",
+      "January: First model 'Iris' trained (renamed to Yuuki). March – April: Accelerated Doki development. Rewrite of proot (doki-proot), internal DNS, first runners. May 4: First public Doki commit on GitHub. June 4: Doki v0.9.2 stable release with DokiLink-Lite and 190+ bugs fixed. June 5: Second OpceanAI anniversary. June 6: Doki v0.9.3 release with 12 runners, 244 CLI commands, and ARMv7 support. August (planned): Doki 0.10 with Podman, Kubernetes, native macOS, and doki-os.",
   },
 ]
 

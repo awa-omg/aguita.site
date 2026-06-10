@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react"
 import { pipeline, TextStreamer } from "@huggingface/transformers"
-import { SYSTEM_PROMPT } from "@/lib/assistant-context"
+import { SYSTEM_PROMPT, WELCOME_MESSAGE } from "@/lib/assistant-context"
 import { searchKnowledge } from "@/lib/assistant-knowledge"
 import { searchWeb } from "@/lib/assistant-web-search"
 import { parseCommand, getHelpText, getRandomJoke } from "@/lib/assistant-commands"
@@ -212,6 +212,15 @@ export function useTransformers(toolCallbacks: any) {
 
   const sendMessage = useCallback(
     async (userMessage: string) => {
+      // Special welcome message
+      if (userMessage === "__welcome__") {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: WELCOME_MESSAGE, timestamp: Date.now(), agent: "system" },
+        ])
+        return
+      }
+
       const intent = classifyIntent(userMessage)
       const timestamp = Date.now()
 
@@ -288,14 +297,14 @@ export function useTransformers(toolCallbacks: any) {
         return
       }
 
-      // Chat (requires model)
+      // Chat (requires model) - try to load if not loaded
       if (!generatorRef.current || !modelReady) {
         // Try to load model if not loaded
-        if (status === "idle" || status === "error") {
+        if (status === "idle" || status === "error" || status === "offline") {
           await loadModel()
         }
 
-        // If still not ready, use knowledge fallback
+        // If still not ready after attempting load, use fallback
         if (!generatorRef.current) {
           const fallbackResponse = handleKnowledge(userMessage)
           const response = fallbackResponse

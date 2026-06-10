@@ -181,6 +181,7 @@ export default function Home() {
         onNavigate={handleTabChange}
         onOpenTerminal={() => setTerminalOpen(true)}
         terminalOpen={terminalOpen}
+        activeTab={activeTab}
       />
     </div>
   )

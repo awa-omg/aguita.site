@@ -47,7 +47,7 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
     setChatOpen: (open: boolean) => setIsOpen(open),
   }
 
-  const { status, progress, messages, modelInfo, loadModel, sendMessage, addMessage, clearMessages, modelReady } =
+  const { status, progress, messages, modelInfo, error, loadModel, sendMessage, clearMessages } =
     useTransformers(toolCallbacks)
   
   const [isOpen, setIsOpen] = useState(false)
@@ -60,27 +60,24 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
 
   // Check first visit
   useEffect(() => {
-    const visited = localStorage.getItem("ai-assistant-visited-v2")
+    const visited = localStorage.getItem("ai-assistant-visited-v3")
     if (!visited) {
-      localStorage.setItem("ai-assistant-visited-v2", "true")
+      localStorage.setItem("ai-assistant-visited-v3", "true")
       setIsOpen(true)
       setHasOpened(true)
     }
   }, [])
 
-  // Initialize model when opened
+  // Auto welcome message - works even without model
   useEffect(() => {
-    if (isOpen && (status === "idle" || status === "error")) {
-      loadModel()
+    if (isOpen && hasOpened && messages.length === 0) {
+      // Add welcome message after a short delay
+      const timer = setTimeout(() => {
+        sendMessage("__welcome__")
+      }, 500)
+      return () => clearTimeout(timer)
     }
-  }, [isOpen, status, loadModel])
-
-  // Auto welcome message
-  useEffect(() => {
-    if (isOpen && hasOpened && status === "ready" && messages.length === 0) {
-      addMessage({ role: "assistant", content: WELCOME_MESSAGE, timestamp: Date.now() })
-    }
-  }, [isOpen, hasOpened, status, messages.length, addMessage])
+  }, [isOpen, hasOpened, messages.length, sendMessage])
 
   // Keyboard shortcut Ctrl+Shift+A / Cmd+Shift+A
   useEffect(() => {
@@ -113,7 +110,7 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
 
   const handleSend = useCallback(() => {
     const text = inputValue.trim()
-    if (!text || status !== "ready") return
+    if (!text || status === "generating") return
     setInputValue("")
     sendMessage(text)
   }, [inputValue, status, sendMessage])
@@ -130,17 +127,21 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
 
   const handleSuggestion = useCallback(
     (prompt: string) => {
-      if (status !== "ready") return
+      if (status === "generating") return
       sendMessage(prompt)
     },
     [status, sendMessage]
   )
 
   const isLoading = status === "loading"
-  const isReady = status === "ready" || status === "offline"
   const isGenerating = status === "generating"
   const isUnsupported = status === "unsupported"
-  const isError = status === "error" || status === "offline"
+  const isError = status === "error"
+  const isOffline = status === "offline"
+  const isIdle = status === "idle"
+
+  // Input is enabled when: idle, ready, error, offline
+  const inputEnabled = !isGenerating && !isLoading
 
   return (
     <>
@@ -208,7 +209,13 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
                 <div>
                   <h3 className="text-sm font-semibold text-[#e6edf3]">OpceanBot</h3>
                   <p className="text-[10px] text-[#8b949e]">
-                    {isReady && modelInfo ? `${modelInfo.label} • 100% Local` : "AI Assistant"}
+                    {isLoading 
+                      ? `Loading ${modelInfo?.label || "AI"}...` 
+                      : isOffline 
+                        ? "⚡ Offline mode"
+                        : isError
+                          ? "⚠️ Error"
+                          : "AI Assistant"}
                   </p>
                 </div>
               </div>
@@ -245,91 +252,86 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
               </div>
             </div>
 
+            {/* Status bar (shows loading/error) */}
+            {isLoading && (
+              <div className="px-4 py-2 bg-[#161b22] border-b border-[#30363d] flex-shrink-0">
+                <div className="flex items-center gap-3">
+                  <Loader2 className="w-4 h-4 text-[#388bfd] animate-spin" />
+                  <div className="flex-1">
+                    <div className="flex justify-between text-xs text-[#8b949e] mb-1">
+                      <span>Loading {modelInfo?.label} ({modelInfo?.size})</span>
+                      <span>{progress}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-[#21262d] rounded-full overflow-hidden">
+                      <motion.div
+                        className="h-full bg-gradient-to-r from-[#388bfd] to-[#1f6feb]"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progress}%` }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <p className="text-[10px] text-[#8b949e] mt-1">
+                  ⏳ This can take 1-2 minutes. You can chat below while waiting!
+                </p>
+              </div>
+            )}
+
+            {isError && (
+              <div className="px-4 py-2 bg-[#da3633]/10 border-b border-[#da3633]/30 flex-shrink-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">⚠️</span>
+                  <div className="flex-1">
+                    <p className="text-xs text-[#f85149] font-medium">AI model failed to load</p>
+                    <p className="text-[10px] text-[#8b949e]">{error || "Unknown error"}</p>
+                  </div>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => loadModel(true)}
+                      className="px-2 py-1 bg-[#388bfd] text-white rounded text-[10px] hover:bg-[#1f6feb] transition-colors"
+                    >
+                      Retry
+                    </button>
+                    <button
+                      onClick={() => {
+                        // Set offline mode by resetting
+                        loadModel()
+                      }}
+                      className="px-2 py-1 bg-[#21262d] text-[#8b949e] border border-[#30363d] rounded text-[10px] hover:bg-[#30363d] transition-colors"
+                    >
+                      Offline
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isUnsupported && (
+              <div className="px-4 py-2 bg-[#f0883e]/10 border-b border-[#f0883e]/30 flex-shrink-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">😿</span>
+                  <p className="text-xs text-[#f0883e]">WebGPU not available</p>
+                  <button
+                    onClick={() => {
+                      // Try offline
+                    }}
+                    className="px-2 py-1 bg-[#388bfd] text-white rounded text-[10px] hover:bg-[#1f6feb] transition-colors"
+                  >
+                    Offline mode
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Messages Area */}
             <div
               ref={messagesContainerRef}
               onScroll={handleScroll}
               className="flex-1 overflow-y-auto px-4 py-3 space-y-3"
             >
-              {/* Loading State */}
-              {isLoading && (
-                <div className="flex flex-col items-center justify-center h-full gap-3">
-                  <div className="relative w-12 h-12">
-                    <Loader2 className="w-12 h-12 text-[#388bfd] animate-spin" />
-                    <Sparkles className="w-4 h-4 text-[#388bfd] absolute top-0 right-0 animate-pulse" />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-sm text-[#e6edf3] font-medium">Loading AI model...</p>
-                    <p className="text-xs text-[#8b949e] mt-1">
-                      {modelInfo?.label} (~{modelInfo?.type === "mobile" ? "200" : "850"}MB)
-                    </p>
-                  </div>
-                  <div className="w-full max-w-[200px] h-2 bg-[#21262d] rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-[#388bfd] to-[#1f6feb]"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${progress}%` }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </div>
-                  <p className="text-xs text-[#8b949e]">{progress}%</p>
-                </div>
-              )}
-
-              {/* Unsupported State */}
-              {isUnsupported && (
-                <div className="flex flex-col items-center justify-center h-full gap-3 px-2">
-                  <div className="w-12 h-12 rounded-full bg-[#f0883e]/20 flex items-center justify-center">
-                    <span className="text-2xl">😿</span>
-                  </div>
-                  <div className="text-center whitespace-pre-wrap text-sm text-[#e6edf3]">
-                    {UNSUPPORTED_MESSAGE}
-                  </div>
-                  <button
-                    onClick={() => {
-                      setStatus("offline")
-                    }}
-                    className="px-4 py-2 bg-[#388bfd] text-white rounded-lg text-sm hover:bg-[#1f6feb] transition-colors"
-                  >
-                    Try offline mode (no AI)
-                  </button>
-                </div>
-              )}
-
-              {/* Error State */}
-              {isError && (
-                <div className="flex flex-col items-center justify-center h-full gap-3">
-                  <div className="w-12 h-12 rounded-full bg-[#da3633]/20 flex items-center justify-center">
-                    <span className="text-2xl">💥</span>
-                  </div>
-                  <p className="text-sm text-[#e6edf3] text-center">
-                    {status === "offline" 
-                      ? "⚡ Offline mode active. Using knowledge base only."
-                      : "Something broke. Try refreshing the page."}
-                  </p>
-                  {status === "error" && (
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => {
-                          loadModel(true)
-                        }}
-                        className="px-4 py-2 bg-[#388bfd] text-white rounded-lg text-sm hover:bg-[#1f6feb] transition-colors"
-                      >
-                        Retry
-                      </button>
-                      <button
-                        onClick={() => setStatus("offline")}
-                        className="px-4 py-2 bg-[#21262d] text-[#e6edf3] border border-[#30363d] rounded-lg text-sm hover:bg-[#30363d] transition-colors"
-                      >
-                        Offline mode
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-
               {/* Messages */}
-              {(isReady || isGenerating) && (
+              {messages.length > 0 ? (
                 <>
                   {messages.map((msg, i) => (
                     <AIMessage
@@ -346,6 +348,18 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
                   )}
                   <div ref={messagesEndRef} />
                 </>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#388bfd]/20 to-[#1f6feb]/20 flex items-center justify-center">
+                    <Bot className="w-8 h-8 text-[#388bfd]" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-[#e6edf3]">Hey! owa aguita :3</p>
+                    <p className="text-xs text-[#8b949e] mt-1 max-w-[250px]">
+                      Ask me anything about awa's projects, or use commands like /help
+                    </p>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -367,7 +381,7 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
             </AnimatePresence>
 
             {/* Suggestions */}
-            {(isReady || isGenerating) && messages.length <= 2 && (
+            {!isGenerating && messages.length <= 2 && (
               <div className="px-4 py-2 flex flex-wrap gap-2 border-t border-[#30363d]/50 flex-shrink-0">
                 {SUGGESTED_PROMPTS.map((prompt) => (
                   <button
@@ -385,40 +399,46 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
               </div>
             )}
 
-            {/* Input Area */}
-            {(isReady || isGenerating) && (
-              <div className="px-4 py-3 border-t border-[#30363d] bg-[#161b22]/80 flex-shrink-0">
-                <div className="flex items-end gap-2">
-                  <textarea
-                    ref={inputRef}
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Ask me anything... (try /help)"
-                    disabled={isGenerating}
-                    rows={1}
-                    className="flex-1 bg-[#21262d] border border-[#30363d] rounded-xl 
-                               px-3 py-2.5 text-sm text-[#e6edf3] placeholder-[#8b949e]
-                               focus:outline-none focus:border-[#388bfd] resize-none
-                               disabled:opacity-50 transition-colors"
-                    style={{ maxHeight: "100px", minHeight: "40px" }}
-                  />
-                  <button
-                    onClick={handleSend}
-                    disabled={!inputValue.trim() || isGenerating}
-                    className="p-2.5 rounded-xl bg-[#388bfd] text-white 
-                               hover:bg-[#1f6feb] disabled:opacity-50 
-                               disabled:cursor-not-allowed transition-colors
-                               cursor-pointer flex-shrink-0"
-                  >
-                    <Send className="w-4 h-4" />
-                  </button>
-                </div>
-                <p className="text-[10px] text-[#8b949e] mt-1.5 text-center">
-                  Runs 100% on your device. No cloud, no servers. • Ctrl+Shift+A to toggle
-                </p>
+            {/* Input Area - Always enabled except when generating */}
+            <div className="px-4 py-3 border-t border-[#30363d] bg-[#161b22]/80 flex-shrink-0">
+              <div className="flex items-end gap-2">
+                <textarea
+                  ref={inputRef}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={isLoading 
+                    ? "Loading AI... you can still chat!" 
+                    : isError 
+                      ? "Chat works! AI model failed..."
+                      : "Ask me anything... (try /help)"
+                  }
+                  disabled={isGenerating}
+                  rows={1}
+                  className="flex-1 bg-[#21262d] border border-[#30363d] rounded-xl 
+                             px-3 py-2.5 text-sm text-[#e6edf3] placeholder-[#8b949e]
+                             focus:outline-none focus:border-[#388bfd] resize-none
+                             disabled:opacity-50 transition-colors"
+                  style={{ maxHeight: "100px", minHeight: "40px" }}
+                />
+                <button
+                  onClick={handleSend}
+                  disabled={!inputValue.trim() || isGenerating}
+                  className="p-2.5 rounded-xl bg-[#388bfd] text-white 
+                             hover:bg-[#1f6feb] disabled:opacity-50 
+                             disabled:cursor-not-allowed transition-colors
+                             cursor-pointer flex-shrink-0"
+                >
+                  <Send className="w-4 h-4" />
+                </button>
               </div>
-            )}
+              <p className="text-[10px] text-[#8b949e] mt-1.5 text-center">
+                {isLoading 
+                  ? "⏳ Model loading in background... Chat works without AI!"
+                  : "Runs 100% on your device. No cloud, no servers. • Ctrl+Shift+A"
+                }
+              </p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -47,7 +47,7 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
     setChatOpen: (open: boolean) => setIsOpen(open),
   }
 
-  const { status, progress, messages, modelInfo, initialize, sendMessage, addMessage, clearMessages } =
+  const { status, progress, messages, modelInfo, loadModel, sendMessage, addMessage, clearMessages, workerReady } =
     useTransformers(toolCallbacks)
   
   const [isOpen, setIsOpen] = useState(false)
@@ -70,10 +70,10 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
 
   // Initialize model when opened
   useEffect(() => {
-    if (isOpen && status === "idle") {
-      initialize()
+    if (isOpen && (status === "idle" || status === "error")) {
+      loadModel()
     }
-  }, [isOpen, status, initialize])
+  }, [isOpen, status, loadModel])
 
   // Auto welcome message
   useEffect(() => {
@@ -137,10 +137,10 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
   )
 
   const isLoading = status === "loading"
-  const isReady = status === "ready"
+  const isReady = status === "ready" || status === "offline"
   const isGenerating = status === "generating"
   const isUnsupported = status === "unsupported"
-  const isError = status === "error"
+  const isError = status === "error" || status === "offline"
 
   return (
     <>
@@ -285,6 +285,14 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
                   <div className="text-center whitespace-pre-wrap text-sm text-[#e6edf3]">
                     {UNSUPPORTED_MESSAGE}
                   </div>
+                  <button
+                    onClick={() => {
+                      setStatus("offline")
+                    }}
+                    className="px-4 py-2 bg-[#388bfd] text-white rounded-lg text-sm hover:bg-[#1f6feb] transition-colors"
+                  >
+                    Try offline mode (no AI)
+                  </button>
                 </div>
               )}
 
@@ -295,8 +303,28 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
                     <span className="text-2xl">💥</span>
                   </div>
                   <p className="text-sm text-[#e6edf3] text-center">
-                    Something broke. Try refreshing the page.
+                    {status === "offline" 
+                      ? "⚡ Offline mode active. Using knowledge base only."
+                      : "Something broke. Try refreshing the page."}
                   </p>
+                  {status === "error" && (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          loadModel(true)
+                        }}
+                        className="px-4 py-2 bg-[#388bfd] text-white rounded-lg text-sm hover:bg-[#1f6feb] transition-colors"
+                      >
+                        Retry
+                      </button>
+                      <button
+                        onClick={() => setStatus("offline")}
+                        className="px-4 py-2 bg-[#21262d] text-[#e6edf3] border border-[#30363d] rounded-lg text-sm hover:bg-[#30363d] transition-colors"
+                      >
+                        Offline mode
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 

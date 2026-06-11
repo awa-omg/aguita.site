@@ -33,3 +33,6 @@ Thumbs.db
 # Temporary
 *.tmp
 *.temp
+
+# Agent skills source repo
+agent-skills/

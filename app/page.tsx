@@ -8,6 +8,8 @@ import { NavTabs } from "@/components/NavTabs"
 import { CustomCursor } from "@/components/CustomCursor"
 import { WebGLBackground } from "@/components/WebGLBackground"
 import { TerminalOverlay } from "@/components/TerminalOverlay"
+import { NowPlaying } from "@/components/NowPlaying"
+import { EasterEggs, DevMode } from "@/components/EasterEggs"
 import { OverviewTab } from "@/components/tabs/OverviewTab"
 import { RepositoriesTab } from "@/components/tabs/RepositoriesTab"
 import { ModelsTab } from "@/components/tabs/ModelsTab"
@@ -122,7 +124,7 @@ export default function Home() {
   const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || OverviewTab
 
   return (
-    <div className="min-h-screen bg-[#0d1117]">
+    <div className="min-h-screen bg-[#0d1117] noise-overlay">
       <CustomCursor />
       <WebGLBackground />
       
@@ -159,6 +161,13 @@ export default function Home() {
         onNavigate={handleTabChange}
       />
 
+      {/* Now Playing (ncmpcpp) */}
+      <NowPlaying />
+
+      {/* Easter Eggs */}
+      <EasterEggs />
+      <DevMode />
+
       {/* Konami notification */}
       <AnimatePresence>
         {konamiActive && (
@@ -176,7 +185,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* AI Assistant */}
+      {/* AI Assistant (awa) */}
       <AIAssistant 
         onNavigate={handleTabChange}
         onOpenTerminal={() => setTerminalOpen(true)}

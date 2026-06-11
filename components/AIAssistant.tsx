@@ -200,7 +200,7 @@ export function AIAssistant({ onNavigate, onOpenTerminal, terminalOpen }: AIAssi
                   <Bot className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-[#e6edf3]">OpceanBot</h3>
+                  <h3 className="text-sm font-semibold text-[#e6edf3]">awa</h3>
                   <p className="text-[10px] text-[#8b949e]">
                     {isLoading 
                       ? "Loading " + (modelInfo?.label || "AI") + "..." 

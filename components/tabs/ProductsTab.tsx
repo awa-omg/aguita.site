@@ -1,211 +1,187 @@
 "use client"
 
-import { Box, ArrowUpRight, Network, Globe, Server, Terminal, Package, Layers, GitFork, Star } from "lucide-react"
-import { motion } from "framer-motion"
+const OcticonPackage = () => (
+  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" style={{ fill: "var(--color-fg-muted)" }}>
+    <path d="m8.878.392 5.25 3.045c.54.314.872.89.872 1.514v6.098a1.75 1.75 0 0 1-.872 1.514l-5.25 3.045a1.75 1.75 0 0 1-1.756 0l-5.25-3.045A1.75 1.75 0 0 1 1 11.049V4.951c0-.624.332-1.201.872-1.514L7.122.392a1.75 1.75 0 0 1 1.756 0ZM7.875 1.69l-4.63 2.685L8 7.133l4.755-2.758-4.63-2.685a.248.248 0 0 0-.25 0ZM2.5 5.677v5.372c0 .09.047.171.125.216l4.625 2.683V8.432Zm6.25 8.271 4.625-2.683a.25.25 0 0 0 .125-.216V5.677L8.75 8.432Z" />
+  </svg>
+)
+
+const OcticonLinkExternal = () => (
+  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" style={{ fill: "currentColor" }}>
+    <path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z" />
+  </svg>
+)
+
+const OcticonServer = () => (
+  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" style={{ fill: "var(--color-fg-muted)" }}>
+    <path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v3c0 .832-.507 1.542-1.25 1.833v.167c.743.291 1.25 1.001 1.25 1.833v3A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-3c0-.832.507-1.542 1.25-1.833V7.583C.507 7.292 0 6.582 0 5.75v-3C0 1.784.784 1 1.75 1ZM1.5 2.75v3c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-3a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Zm.25 5.75a.25.25 0 0 0-.25.25v3c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-3a.25.25 0 0 0-.25-.25Zm11 .5a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm-5.5 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM7.25 5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+  </svg>
+)
 
 const products = [
   {
     name: "Doki",
-    emoji: "🐳",
+    tagline: "Universal container engine for Android, Linux, and macOS",
     description:
-      "OCI native, Docker & Podman compatible, rootless. Runs on Linux, macOS, and Android via Termux.",
+      "OCI-native, Docker & Podman compatible, rootless container runtime. Runs on Linux, macOS, and Android via Termux without requiring root privileges.",
     stats: [
-      { label: "Stars", value: "20+" },
-      { label: "Isolation Levels", value: "12" },
-      { label: "Releases", value: "9" },
+      { label: "Stars",            value: "20+" },
+      { label: "Isolation levels", value: "12" },
+      { label: "CLI commands",     value: "244" },
+      { label: "Runners",          value: "12" },
     ],
+    topics: ["Go", "OCI", "Containers", "Android", "Linux", "Rootless"],
     links: [
-      { label: "GitHub", url: "https://github.com/OpceanAI/Doki" },
-      { label: "Docs", url: "https://github.com/OpceanAI/Doki#readme" },
+      { label: "GitHub",  url: "https://github.com/OpceanAI/Doki" },
+      { label: "Readme",  url: "https://github.com/OpceanAI/Doki#readme" },
     ],
   },
   {
     name: "ToS",
-    emoji: "🔄",
-    description: "Decentralized synchronization protocol for distributed systems.",
+    tagline: "Open P2P protocol for real-time structured data synchronization",
+    description:
+      "Translation of Service — decentralized protocol for moving and synchronizing structured data between any source and destination without a central broker.",
     stats: [
-      { label: "Stars", value: "5+" },
       { label: "Architecture", value: "P2P" },
+      { label: "Language",     value: "Go" },
     ],
-    links: [{ label: "GitHub", url: "https://github.com/OpceanAI/ToS" }],
+    topics: ["Go", "P2P", "Distributed", "Protocol"],
+    links: [
+      { label: "GitHub", url: "https://github.com/OpceanAI/ToS" },
+    ],
   },
   {
     name: "Shadow",
-    emoji: "👁️",
-    description: "System monitoring and management daemon for Doki infrastructure.",
-    stats: [{ label: "Status", value: "Active development" }],
-    links: [{ label: "GitHub", url: "https://github.com/OpceanAI/Shadow" }],
+    tagline: "Local-first CLI for codebase intelligence",
+    description:
+      "Point Shadow at a file, folder, or running service and it tells you what the project does, how files connect, and where the risky parts are — without sending code to the cloud.",
+    stats: [
+      { label: "Mode",   value: "Local-first" },
+      { label: "Status", value: "Active dev" },
+    ],
+    topics: ["TypeScript", "CLI", "Code Analysis", "Privacy"],
+    links: [
+      { label: "GitHub", url: "https://github.com/OpceanAI/Shadow" },
+    ],
   },
 ]
 
 const infrastructure = [
-  { name: "doki-proot", description: "proot for Android", icon: Package },
-  { name: "DokiLink-Lite", description: "Lightweight container networking", icon: Network },
-  { name: "Internal DNS", description: "Container name resolution", icon: Globe },
-  { name: "12 Runners", description: "Distributed build and test runners", icon: Server },
-  { name: "244 CLI Commands", description: "Complete command-line toolchain", icon: Terminal },
-]
-
-const architecture = [
-  "Rootless-first design — no root privileges required anywhere",
-  "WASM isolation support — sandbox any workload with WebAssembly",
-  "pKVM support (future) — hardware-backed isolation for Android",
-  "Multi-platform — runs on Linux, macOS, and Android via Termux",
+  { name: "doki-proot",        description: "Custom proot fork for Android namespace emulation" },
+  { name: "DokiLink-Lite",     description: "Lightweight container networking layer" },
+  { name: "Internal DNS",      description: "Container name resolution without external dependencies" },
+  { name: "12 Runners",        description: "Distributed build and test execution environments" },
+  { name: "244 CLI commands",  description: "Complete operator toolchain via a single binary" },
+  { name: "ARMv7 support",     description: "32-bit ARM target coverage for older Android devices" },
 ]
 
 export function ProductsTab() {
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="border border-default rounded-md p-6 bg-canvas">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-md bg-canvas-muted flex items-center justify-center">
-            <Box size={20} className="text-primary" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-primary">Products</h2>
-            <p className="text-xs text-muted">Open-source infrastructure by OpceanAI</p>
-          </div>
-        </div>
-        <p className="text-sm text-muted leading-relaxed">
-          Open-source products built for environments where traditional solutions don't reach:
-          mobile devices, resource-constrained systems, and edge computing. Every project is free,
-          transparent, and developed under permissive licenses.
+    <div>
+      {/* Section header */}
+      <div style={{ marginBottom: "24px" }}>
+        <p style={{ fontSize: "14px", color: "var(--color-fg-muted)", margin: 0, lineHeight: "1.5" }}>
+          Open-source infrastructure built for environments where traditional solutions don&apos;t reach:
+          mobile devices, resource-constrained systems, and edge computing.
+          Every project is permissively licensed and developed in the open.
         </p>
       </div>
 
-      {/* Hero Product Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {products.map((product, i) => (
-          <motion.div
-            key={product.name}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1, duration: 0.4 }}
-            className="border border-default rounded-md bg-canvas hover:border-accent/50 transition-colors"
+      {/* Product cards */}
+      <div style={{ marginBottom: "32px" }}>
+        {products.map((p, i) => (
+          <div
+            key={p.name}
+            className="Box"
+            style={{ marginBottom: i < products.length - 1 ? "16px" : 0 }}
           >
-            <div className="p-5">
-              {/* Header */}
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-2xl leading-none">{product.emoji}</span>
-                <h3 className="text-base font-semibold text-primary">{product.name}</h3>
+            {/* Card header */}
+            <div className="Box-header">
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <OcticonPackage />
+                  <h3 style={{ margin: 0, fontSize: "16px", fontWeight: 600, color: "var(--color-fg-default)" }}>
+                    {p.name}
+                  </h3>
+                </div>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  {p.links.map((link) => (
+                    <a
+                      key={link.label}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-default btn-sm"
+                      style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
+                    >
+                      {link.label}
+                      <OcticonLinkExternal />
+                    </a>
+                  ))}
+                </div>
               </div>
+              <p style={{ margin: "4px 0 0", fontSize: "14px", color: "var(--color-fg-muted)" }}>
+                {p.tagline}
+              </p>
+            </div>
 
-              {/* Description */}
-              <p className="text-xs text-muted mb-4 leading-relaxed">{product.description}</p>
+            {/* Card body */}
+            <div className="Box-body">
+              <p style={{ fontSize: "14px", color: "var(--color-fg-default)", lineHeight: "1.5", margin: "0 0 16px" }}>
+                {p.description}
+              </p>
 
               {/* Stats */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                {product.stats.map((stat) => (
-                  <span
-                    key={stat.label}
-                    className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] bg-canvas-muted border border-default rounded-md text-muted"
-                  >
-                    <span className="font-medium text-primary">{stat.value}</span>
-                    {stat.label}
-                  </span>
+              <div style={{ display: "flex", gap: "24px", flexWrap: "wrap", marginBottom: "16px" }}>
+                {p.stats.map((s) => (
+                  <div key={s.label}>
+                    <div style={{ fontSize: "20px", fontWeight: 600, color: "var(--color-fg-default)", lineHeight: 1.2 }}>
+                      {s.value}
+                    </div>
+                    <div style={{ fontSize: "12px", color: "var(--color-fg-muted)" }}>
+                      {s.label}
+                    </div>
+                  </div>
                 ))}
               </div>
 
-              {/* Links */}
-              <div className="flex items-center gap-3 pt-3 border-t border-default">
-                {product.links.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-accent hover:underline font-medium"
-                  >
-                    {link.label}
-                    <ArrowUpRight size={12} />
-                  </a>
+              {/* Topics */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                {p.topics.map((t) => (
+                  <span key={t} className="topic-tag">{t}</span>
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
 
-      {/* Infrastructure */}
-      <div className="border border-default rounded-md bg-canvas overflow-hidden">
-        <div className="px-5 py-4 border-b border-default">
-          <h3 className="text-base font-semibold text-primary flex items-center gap-2">
-            <Server size={16} className="text-muted" />
-            Infrastructure
-          </h3>
-        </div>
-        <div className="divide-y divide-[var(--border-muted)]">
-          {infrastructure.map((item, i) => {
-            const Icon = item.icon
-            return (
-              <motion.div
-                key={item.name}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05, duration: 0.3 }}
-                className="flex items-center gap-3 px-5 py-3 hover:bg-canvas-muted transition-colors"
-              >
-                <Icon size={14} className="text-muted flex-shrink-0" />
-                <span className="text-sm font-medium text-primary">{item.name}</span>
-                <span className="text-xs text-muted ml-auto">{item.description}</span>
-              </motion.div>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Architecture */}
-      <div className="border border-default rounded-md bg-canvas overflow-hidden">
-        <div className="px-5 py-4 border-b border-default">
-          <h3 className="text-base font-semibold text-primary flex items-center gap-2">
-            <Layers size={16} className="text-muted" />
-            Architecture
-          </h3>
-        </div>
-        <div className="p-5">
-          <p className="text-xs text-muted mb-4">
-            Doki is built on a rootless-first architecture designed for maximum portability across
-            devices and environments:
-          </p>
-          <ul className="space-y-3">
-            {architecture.map((item, i) => (
-              <motion.li
-                key={i}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05, duration: 0.3 }}
-                className="flex items-start gap-3 text-sm text-primary"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--fg-accent)] mt-1.5 flex-shrink-0" />
-                {item}
-              </motion.li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="flex items-center gap-4 pt-4 border-t border-default">
-        <a
-          href="https://github.com/OpceanAI"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 text-sm text-accent hover:underline"
+      {/* Infrastructure list */}
+      <section aria-labelledby="infra-heading">
+        <h2
+          id="infra-heading"
+          style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", fontWeight: 600, color: "var(--color-fg-default)", marginBottom: "8px" }}
         >
-          <GitFork size={14} />
-          GitHub / OpceanAI
-        </a>
-        <a
-          href="https://github.com/OpceanAI/Doki"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 text-sm text-accent hover:underline"
-        >
-          <Star size={14} />
-          Star Doki
-        </a>
-      </div>
+          <OcticonServer />
+          Infrastructure components
+        </h2>
+        <div className="Box">
+          {infrastructure.map((item, i) => (
+            <div
+              key={item.name}
+              className="Box-row"
+              style={{ borderTop: i === 0 ? "none" : undefined }}
+            >
+              <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-fg-default)", minWidth: "180px" }}>
+                {item.name}
+              </span>
+              <span style={{ fontSize: "14px", color: "var(--color-fg-muted)", marginLeft: "16px" }}>
+                {item.description}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   )
 }

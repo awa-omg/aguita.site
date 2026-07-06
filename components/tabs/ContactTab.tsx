@@ -1,168 +1,285 @@
-import { Mail, Globe, ExternalLink } from "lucide-react"
-import { motion } from "framer-motion"
+"use client"
 
-// SVG Icons for each platform
+const OcticonMail = () => (
+  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" style={{ fill: "var(--color-fg-muted)", flexShrink: 0 }}>
+    <path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2ZM1.5 12.251c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809L8.38 9.397a.75.75 0 0 1-.76 0L1.5 5.809v6.442Zm13-8.181v-.32a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25v.32L8 7.88Z" />
+  </svg>
+)
+
+const OcticonGlobe = () => (
+  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" style={{ fill: "var(--color-fg-muted)", flexShrink: 0 }}>
+    <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM5.78 8.75a9.64 9.64 0 0 0 1.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0 0 10.22 8.75Zm4.44-1.5a9.64 9.64 0 0 0-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 0 0-.857 1.215A9.64 9.64 0 0 0 5.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 0 0 4.498 5.sreq Zm0-1.5a6.507 6.507 0 0 0-4.73 5.25H4.276A11.154 11.154 0 0 1 4.276 7.25Zm6.196 0c-.195.826-.329 1.726-.395 2.635a14.21 14.21 0 0 1 3.855.615A6.507 6.507 0 0 0 14.457 7.25Zm0 1.5h-2.725c.066.909.2 1.809.395 2.635a6.507 6.507 0 0 0 2.33-2.635Z" />
+  </svg>
+)
+
+const OcticonLinkExternal = () => (
+  <svg aria-hidden="true" height="12" viewBox="0 0 16 16" version="1.1" width="12" style={{ fill: "currentColor" }}>
+    <path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z" />
+  </svg>
+)
+
+/* Platform icon SVGs */
 const GitHubIcon = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+  <svg viewBox="0 0 16 16" width="16" height="16" style={{ fill: "var(--color-fg-default)" }}>
+    <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z" />
   </svg>
 )
 
-const GitLabIcon = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-    <path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0 1 18.6 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51L23 13.45a.84.84 0 0 1-.35.94z"/>
-  </svg>
-)
-
-const HuggingFaceIcon = () => (
-  <svg viewBox="0 0 256 256" width="20" height="20">
-    <path fill="#FFD21E" d="M230.721 172.7C230.183 170.673 229.313 168.75 228.146 167.008C228.396 166.091 228.587 165.159 228.714 164.217C229.543 158.241 227.471 152.77 223.567 148.537C221.452 146.225 219.185 144.698 216.784 143.761C218.36 137.018 219.157 130.117 219.161 123.193C219.161 120.03 218.982 116.932 218.682 113.88C218.526 112.356 218.337 110.836 218.115 109.32C217.428 104.847 216.408 100.431 215.064 96.11C214.183 93.2707 213.164 90.476 212.01 87.736C210.281 83.6782 208.262 79.75 205.969 75.982C204.465 73.475 202.827 71.0508 201.062 68.72C200.197 67.543 199.296 66.3938 198.358 65.274C195.58 61.898 192.561 58.7277 189.325 55.788C188.25 54.7997 187.145 53.8453 186.01 52.926C184.893 51.9943 183.751 51.0927 182.586 50.222C180.241 48.4766 177.818 46.8392 175.324 45.315C161.543 36.945 145.382 32.145 128.109 32.145C77.817 32.145 37.057 72.907 37.057 123.196C37.055 130.208 37.867 137.196 39.477 144.02C37.317 144.958 35.247 146.42 33.327 148.535C29.424 152.766 27.351 158.217 28.18 164.193C28.306 165.142 28.495 166.082 28.747 167.006C27.5811 168.749 26.7117 170.673 26.174 172.7C24.974 177.261 25.369 181.374 26.894 184.978C25.236 189.688 25.65 194.704 27.809 199.065C29.379 202.25 31.626 204.714 34.396 206.916C37.689 209.534 41.811 211.758 46.783 213.892C52.715 216.422 59.956 218.799 63.249 219.671C71.755 221.873 79.911 223.269 88.177 223.337C99.954 223.446 110.096 220.677 117.357 213.59C120.924 214.027 124.515 214.246 128.109 214.244C131.906 214.236 135.699 213.997 139.467 213.529C146.711 220.661 156.892 223.455 168.712 223.343C176.977 223.277 185.133 221.881 193.617 219.676C196.932 218.804 204.17 216.427 210.105 213.897C215.077 211.76 219.199 209.536 222.514 206.922C225.263 204.719 227.508 202.256 229.079 199.071C231.26 194.709 231.652 189.693 230.017 184.983C231.527 181.379 231.92 177.257 230.721 172.7Z"/>
-    <path fill="#FF9D0B" d="M152.047 102.567C153.229 102.985 154.108 104.257 154.944 105.468C156.074 107.104 157.126 108.627 158.74 107.769C160.644 106.756 162.205 105.202 163.225 103.302C164.246 101.402 164.681 99.2427 164.475 97.096C164.321 95.4908 163.813 93.9398 162.987 92.5548C162.161 91.1697 161.038 89.985 159.7 89.0862C158.361 88.1874 156.839 87.5968 155.245 87.3569C153.65 87.117 152.022 87.2339 150.478 87.699C148.934 88.1639 147.513 88.9653 146.316 90.0455C145.119 91.1257 144.176 92.4578 143.556 93.946C142.936 95.4342 142.653 97.0415 142.728 98.652C142.804 100.263 143.235 101.836 143.992 103.26C144.74 104.667 146.4 104.003 148.152 103.302C149.525 102.753 150.956 102.181 152.047 102.567ZM100.672 102.567C99.49 102.985 98.611 104.258 97.775 105.468C96.645 107.105 95.592 108.627 93.979 107.769C91.5845 106.501 89.7482 104.386 88.8278 101.838C87.9075 99.2895 87.9692 96.4896 89.0008 93.9841C90.0324 91.4786 91.9601 89.4471 94.408 88.2855C96.856 87.1239 99.6488 86.9156 102.242 87.701C104.307 88.3228 106.141 89.5427 107.513 91.2065C108.885 92.8704 109.732 94.9035 109.949 97.049C110.165 99.1945 109.74 101.356 108.728 103.26C107.979 104.667 106.319 104.003 104.567 103.303C103.193 102.753 101.764 102.181 100.672 102.567Z"/>
-    <path fill="#3A3B45" d="M144.099 149.318C152.242 142.903 155.233 132.429 155.233 125.977C155.233 120.877 151.802 122.482 146.309 125.202L145.999 125.355C140.957 127.852 134.245 131.177 126.877 131.177C119.508 131.177 112.796 127.852 107.755 125.354C102.084 122.545 98.527 120.783 98.527 125.978C98.527 132.634 101.709 143.563 110.443 149.912C111.596 147.573 113.219 145.497 115.211 143.813C117.202 142.129 119.52 140.874 122.018 140.126C122.89 139.866 123.788 141.367 124.707 142.904C125.594 144.386 126.501 145.902 127.423 145.902C128.406 145.902 129.371 144.408 130.314 142.95C131.299 141.425 132.26 139.94 133.189 140.237C137.864 141.738 141.775 144.993 144.099 149.318Z"/>
-    <path fill="#FF323D" d="M144.097 149.317C139.856 152.659 134.219 154.9 126.878 154.9C119.981 154.9 114.587 152.922 110.443 149.911C111.596 147.572 113.219 145.495 115.211 143.812C117.202 142.128 119.52 140.873 122.018 140.125C123.73 139.614 125.545 145.901 127.423 145.901C129.433 145.901 131.37 139.655 133.189 140.236C137.863 141.738 141.773 144.993 144.097 149.317Z"/>
-  </svg>
-)
-
-const TwitterIcon = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-  </svg>
-)
-
-const RedditIcon = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-    <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/>
-  </svg>
-)
-
-const ChessIcon = () => (
-  <svg viewBox="0 0 48 48" width="20" height="20">
-    <path fill="#689f38" d="M28.001,19h-8.002c0,16.944-10,9.713-10,23c0,0,0.546,2,14.001,2c13.455,0,14.001-2,14.001-2C38.001,28.713,28.001,35.944,28.001,19z"/>
-    <path fill="#33691e" d="M28.001,19h-8.002c0,1.127-0.047,2.141-0.13,3.067c1.869,0.18,5.76,0.63,5.76,3.765C25.629,28.534,23.891,37.51,19,38c-4.461,0.447-8.273-1.094-8.273-1.094C10.272,38.18,9.999,39.81,9.999,42c0,0,0.546,2,14.001,2c13.455,0,14.001-2,14.001-2C38.001,28.713,28.001,35.944,28.001,19z"/>
-    <path fill="#689f38" d="M26.02,14H24h-2.02c-1.986,1.334-3.972,2.668-5.957,4.001c0.03,0.428,0.113,0.997,0.332,1.634c0.197,0.573,0.446,1.032,0.663,1.371l6.984-0.01l6.981,0.01c0.217-0.339,0.466-0.798,0.663-1.371c0.219-0.637,0.302-1.206,0.332-1.634C29.992,16.668,28.006,15.334,26.02,14z"/>
-    <path fill="#33691e" d="M26,20.999l1.084,0.483l0.976-0.48l2.922,0.004c0.217-0.339,0.466-0.798,0.663-1.371c0.219-0.637,0.302-1.206,0.332-1.634c-1.986-1.334-3.972-2.668-5.957-4.001H24l3,4L26,20.999z"/>
-    <circle cx="24" cy="10" r="7" fill="#689f38"/>
-    <path fill="#33691e" d="M27.884,4.178c0.743,1.112,1.178,2.447,1.178,3.884c0,3.016-1.907,5.586-4.581,6.571l1.544,2.07c0.435-0.131,1.04,0.059,1.434-0.15c0.361-0.191,0.515-0.775,0.835-1.024C29.94,14.249,31,12.248,31,10C31,7.571,29.762,5.433,27.884,4.178z"/>
-    <path fill="#9ccc65" d="M24.683,4.727c0.372,0.973-0.526,2.556-2.006,3.536c-1.48,0.979-2.982,0.984-3.354,0.011s0.526-2.556,2.006-3.536S24.31,3.753,24.683,4.727z"/>
-  </svg>
-)
-
-const links = [
-  { label: "GitHub", url: "https://github.com/awa-omg", username: "@awa-omg", icon: GitHubIcon, color: "#f0f6fc" },
-  { label: "GitHub (OpceanAI)", url: "https://github.com/OpceanAI", username: "@OpceanAI", icon: GitHubIcon, color: "#f0f6fc" },
-  { label: "GitLab", url: "https://gitlab.com/aguitauwu", username: "@aguitauwu", icon: GitLabIcon, color: "#fc6d26" },
-  { label: "Hugging Face", url: "https://huggingface.co/OpceanAI", username: "OpceanAI", icon: HuggingFaceIcon, color: "#ffcc00" },
-  { label: "Hugging Face (NHE)", url: "https://huggingface.co/Not-Humanity-Exam", username: "Not-Humanity-Exam", icon: HuggingFaceIcon, color: "#ffcc00" },
-  { label: "Twitter/X", url: "https://twitter.com/awa_omg", username: "@awa_omg", icon: TwitterIcon, color: "#f0f6fc" },
-  { label: "Reddit", url: "https://www.reddit.com/u/agua_omg", username: "u/agua_omg", icon: RedditIcon, color: "#ff4500" },
-  { label: "Chess.com", url: "https://www.chess.com/member/agua_omg", username: "agua_omg", icon: ChessIcon, color: "#7fa650" },
+const profiles = [
+  {
+    label: "GitHub — awa-omg",
+    username: "@awa-omg",
+    url: "https://github.com/awa-omg",
+    Icon: GitHubIcon,
+  },
+  {
+    label: "GitHub — OpceanAI",
+    username: "@OpceanAI",
+    url: "https://github.com/OpceanAI",
+    Icon: GitHubIcon,
+  },
+  {
+    label: "GitLab",
+    username: "@aguitauwu",
+    url: "https://gitlab.com/aguitauwu",
+    Icon: () => (
+      <svg viewBox="0 0 24 24" width="16" height="16" style={{ fill: "#fc6d26" }}>
+        <path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0 1 18.6 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51L23 13.45a.84.84 0 0 1-.35.94z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Hugging Face — OpceanAI",
+    username: "OpceanAI",
+    url: "https://huggingface.co/OpceanAI",
+    Icon: () => (
+      <svg viewBox="0 0 24 24" width="16" height="16">
+        <circle cx="12" cy="12" r="12" fill="#FFD21E" />
+        <text x="12" y="17" textAnchor="middle" fontSize="13" style={{ fontFamily: "serif" }}>🤗</text>
+      </svg>
+    ),
+  },
+  {
+    label: "Twitter / X",
+    username: "@awa_omg",
+    url: "https://twitter.com/awa_omg",
+    Icon: () => (
+      <svg viewBox="0 0 24 24" width="16" height="16" style={{ fill: "var(--color-fg-default)" }}>
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Reddit",
+    username: "u/agua_omg",
+    url: "https://www.reddit.com/u/agua_omg",
+    Icon: () => (
+      <svg viewBox="0 0 24 24" width="16" height="16" style={{ fill: "#ff4500" }}>
+        <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701z" />
+      </svg>
+    ),
+  },
 ]
 
 const emails = [
-  { label: "OpceanAI (Business)", email: "contact@opceanai.com" },
+  { label: "Business",  email: "contact@opceanai.com" },
   { label: "OpceanAI", email: "opceanai@gmail.com" },
-  { label: "Personal", email: "aguitachan3@gmail.com" },
+  { label: "Personal",  email: "aguitachan3@gmail.com" },
 ]
 
 const websites = [
   { label: "OpceanAI", url: "https://opceanai.com" },
-  { label: "Personal", url: "https://aguita.site" },
+  { label: "Portfolio", url: "https://aguita.site" },
 ]
 
 export function ContactTab() {
   return (
-    <motion.div 
-      className="max-w-2xl"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-    >
-      <p className="text-sm text-muted mb-6">
-        Get in touch for collaborations, research opportunities, or open source contributions.
+    <div style={{ maxWidth: "680px" }}>
+      <p style={{ fontSize: "14px", color: "var(--color-fg-muted)", marginBottom: "24px", lineHeight: "1.5" }}>
+        Open to collaborations, research inquiries, and open source contributions.
+        Preferred contact for business is email; for code-related topics, open a GitHub issue on the relevant repo.
       </p>
 
       {/* Sponsor */}
-      <div className="mb-8 p-4 border border-default rounded-md bg-canvas-muted">
-        <h3 className="text-sm font-semibold text-primary mb-3">Support my work</h3>
-        <iframe 
-          src="https://github.com/sponsors/awa-omg/button" 
-          title="Sponsor awa-omg" 
-          height="32" 
-          width="114" 
-          style={{ border: 0, borderRadius: '6px' }}
-        />
-      </div>
+      <section aria-labelledby="sponsor-heading" style={{ marginBottom: "24px" }}>
+        <h2
+          id="sponsor-heading"
+          style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-fg-default)", marginBottom: "8px" }}
+        >
+          Support open source work
+        </h2>
+        <div
+          className="Box"
+          style={{ padding: "16px" }}
+        >
+          <p style={{ fontSize: "14px", color: "var(--color-fg-muted)", margin: "0 0 12px" }}>
+            Funding helps sustain development on Doki, Yuuki, and OpceanAI infrastructure.
+          </p>
+          <iframe
+            src="https://github.com/sponsors/awa-omg/button"
+            title="Sponsor awa-omg"
+            height="32"
+            width="114"
+            style={{ border: 0, borderRadius: "6px", display: "block" }}
+          />
+        </div>
+      </section>
+
+      {/* Email */}
+      <section aria-labelledby="email-heading" style={{ marginBottom: "24px" }}>
+        <h2
+          id="email-heading"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            fontSize: "14px",
+            fontWeight: 600,
+            color: "var(--color-fg-default)",
+            marginBottom: "8px",
+          }}
+        >
+          <OcticonMail />
+          Email
+        </h2>
+        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "4px" }}>
+          {emails.map((item) => (
+            <li key={item.email} style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
+              <a
+                href={`mailto:${item.email}`}
+                style={{
+                  fontSize: "14px",
+                  color: "var(--color-accent-fg)",
+                  fontFamily: "ui-monospace, monospace",
+                  textDecoration: "none",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.textDecoration = "underline" }}
+                onMouseLeave={(e) => { e.currentTarget.style.textDecoration = "none" }}
+              >
+                {item.email}
+              </a>
+              <span style={{ fontSize: "12px", color: "var(--color-fg-muted)" }}>
+                {item.label}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       {/* Websites */}
-      <div className="mb-8">
-        <h3 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
-          <Globe size={16} className="text-muted" />
+      <section aria-labelledby="websites-heading" style={{ marginBottom: "24px" }}>
+        <h2
+          id="websites-heading"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            fontSize: "14px",
+            fontWeight: 600,
+            color: "var(--color-fg-default)",
+            marginBottom: "8px",
+          }}
+        >
+          <OcticonGlobe />
           Websites
-        </h3>
-        <ul className="space-y-2">
+        </h2>
+        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "4px" }}>
           {websites.map((site) => (
-            <li key={site.url}>
+            <li key={site.url} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <a
                 href={site.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-accent hover:underline"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  fontSize: "14px",
+                  color: "var(--color-accent-fg)",
+                  textDecoration: "none",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.textDecoration = "underline" }}
+                onMouseLeave={(e) => { e.currentTarget.style.textDecoration = "none" }}
               >
                 {site.url}
-                <ExternalLink size={12} />
+                <OcticonLinkExternal />
               </a>
-              <span className="text-xs text-muted">{site.label}</span>
+              <span style={{ fontSize: "12px", color: "var(--color-fg-muted)" }}>{site.label}</span>
             </li>
           ))}
         </ul>
-      </div>
+      </section>
 
-      {/* Email */}
-      <div className="mb-8">
-        <h3 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
-          <Mail size={16} className="text-muted" />
-          Email
-        </h3>
-        <ul className="space-y-2">
-          {emails.map((item) => (
-            <li key={item.email}>
+      {/* Profiles */}
+      <section aria-labelledby="profiles-heading">
+        <h2
+          id="profiles-heading"
+          style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-fg-default)", marginBottom: "8px" }}
+        >
+          Profiles
+        </h2>
+        <ul
+          style={{
+            listStyle: "none",
+            padding: 0,
+            margin: 0,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+            gap: "8px",
+          }}
+        >
+          {profiles.map((p) => (
+            <li key={p.url}>
               <a
-                href={`mailto:${item.email}`}
-                className="text-sm text-accent hover:underline"
-              >
-                {item.email}
-              </a>
-              <span className="text-xs text-muted ml-2">({item.label})</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Social Links */}
-      <div>
-        <h3 className="text-sm font-semibold text-primary mb-3">Profiles</h3>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {links.map((link) => (
-            <li key={link.url}>
-              <a
-                href={link.url}
+                href={p.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 border border-default rounded-md bg-canvas hover:bg-canvas-muted hover:border-accent transition-colors"
+                className="Box"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "12px 16px",
+                  textDecoration: "none",
+                  transition: "border-color 80ms ease, background-color 80ms ease",
+                }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement
+                  el.style.backgroundColor = "var(--color-canvas-subtle)"
+                  el.style.borderColor = "var(--color-border-default)"
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement
+                  el.style.backgroundColor = "var(--color-canvas-default)"
+                  el.style.borderColor = "var(--color-border-default)"
+                }}
               >
-                <span style={{ color: link.color }}>
-                  <link.icon />
-                </span>
-                <div className="flex-1 min-w-0">
-                  <span className="text-sm text-primary block">{link.label}</span>
-                  <span className="text-xs text-muted block truncate">{link.username}</span>
+                <p.Icon />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: "14px", color: "var(--color-fg-default)", fontWeight: 500, lineHeight: 1.3 }}>
+                    {p.label}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      color: "var(--color-fg-muted)",
+                      fontFamily: "ui-monospace, monospace",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {p.username}
+                  </div>
                 </div>
-                <ExternalLink size={14} className="text-muted flex-shrink-0" />
+                <span style={{ color: "var(--color-fg-muted)" }}>
+                  <OcticonLinkExternal />
+                </span>
               </a>
             </li>
           ))}
         </ul>
-      </div>
-    </motion.div>
+      </section>
+    </div>
   )
 }

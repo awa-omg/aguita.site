@@ -1,286 +1,334 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
 import { RepoCard } from "@/components/RepoCard"
-import { motion } from "framer-motion"
 
+/* ------------------------------------------------------------------
+   Pinned repositories — same data as before, no animation wrappers
+   ------------------------------------------------------------------ */
 const pinnedRepos = [
   {
     name: "yuuki-training",
-    description: "Training pipeline for Yuuki-82M — a small language model trained from scratch on a Redmi 12 smartphone with zero cloud budget.",
+    description:
+      "Training pipeline for Yuuki-82M — a small language model trained from scratch on a Redmi 12 smartphone with zero cloud budget.",
     language: "Python",
     languageColor: "#3572A5",
     stars: 1,
     forks: 0,
     url: "https://github.com/YuuKi-OS/yuuki-training",
-    starUrl: "https://github.com/YuuKi-OS/yuuki-training",
+    starUrl: "https://github.com/YuuKi-OS/yuuki-training/stargazers",
   },
   {
     name: "Doki",
-    description: "Universal container engine — OCI native, Docker & Podman compatible, rootless. Runs on Linux, macOS, and Android via Termux.",
+    description:
+      "Universal container engine — OCI native, Docker & Podman compatible, rootless. Runs on Linux, macOS, and Android via Termux.",
     language: "Go",
     languageColor: "#00ADD8",
     stars: 20,
     forks: 2,
     url: "https://github.com/OpceanAI/Doki",
-    starUrl: "https://github.com/OpceanAI/Doki",
+    starUrl: "https://github.com/OpceanAI/Doki/stargazers",
   },
   {
     name: "NHE",
-    description: "Not Humanity Exam — A benchmark for measuring metacognition and reasoning patterns in large language models.",
+    description:
+      "Not Humanity Exam — A benchmark for measuring metacognition and reasoning patterns in large language models.",
     language: "Python",
     languageColor: "#3572A5",
     stars: 156,
     forks: 23,
     url: "https://huggingface.co/Not-Humanity-Exam",
-    starUrl: "https://huggingface.co/Not-Humanity-Exam",
   },
   {
     name: "OpceanAI",
-    description: "Open source AI models and research. Fine-tuned LLMs for specific tasks and domains.",
+    description:
+      "Open-source AI models and research. Fine-tuned LLMs and novel training methodologies for resource-constrained environments.",
     language: "Python",
     languageColor: "#3572A5",
     stars: 234,
     forks: 45,
     url: "https://huggingface.co/OpceanAI",
-    starUrl: "https://huggingface.co/OpceanAI",
   },
 ]
 
+/* ------------------------------------------------------------------
+   Static contribution pattern — 53 weeks × 7 days
+   Levels 0-4 map to the Primer calendar day colors
+   ------------------------------------------------------------------ */
+const PATTERN =
+  "0123401230123012340123012340123401230123012340123012340123401230123012340123012340123401234012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401234012340123"
+
+function ContributionGraph() {
+  const cells = PATTERN.slice(0, 371).split("")
+
+  return (
+    <div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(53, 1fr)",
+          gap: "3px",
+        }}
+      >
+        {cells.map((level, i) => {
+          const lvl = parseInt(level, 10)
+          const varName =
+            lvl === 0
+              ? "var(--color-calendar-graph-day-bg)"
+              : lvl === 1
+              ? "var(--color-calendar-graph-day-L1-bg)"
+              : lvl === 2
+              ? "var(--color-calendar-graph-day-L2-bg)"
+              : lvl === 3
+              ? "var(--color-calendar-graph-day-L3-bg)"
+              : "var(--color-calendar-graph-day-L4-bg)"
+          return (
+            <div
+              key={i}
+              style={{
+                aspectRatio: "1",
+                borderRadius: "2px",
+                backgroundColor: varName,
+              }}
+              aria-hidden="true"
+            />
+          )
+        })}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          gap: "4px",
+          marginTop: "8px",
+          fontSize: "12px",
+          color: "var(--color-fg-muted)",
+        }}
+      >
+        <span>Less</span>
+        {[0, 1, 2, 3, 4].map((lvl) => (
+          <div
+            key={lvl}
+            style={{
+              width: "10px",
+              height: "10px",
+              borderRadius: "2px",
+              backgroundColor:
+                lvl === 0
+                  ? "var(--color-calendar-graph-day-bg)"
+                  : lvl === 1
+                  ? "var(--color-calendar-graph-day-L1-bg)"
+                  : lvl === 2
+                  ? "var(--color-calendar-graph-day-L2-bg)"
+                  : lvl === 3
+                  ? "var(--color-calendar-graph-day-L3-bg)"
+                  : "var(--color-calendar-graph-day-L4-bg)",
+            }}
+          />
+        ))}
+        <span>More</span>
+      </div>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------
+   Timeline milestones
+   ------------------------------------------------------------------ */
 const milestones = [
   {
     year: "2023",
     title: "Personal Origins",
     description:
-      "Agua starts a personal project called 'Ocean' to create Telegram and Discord bots. The code is a main.py monolith of over 11,000 lines. Without knowing Docker or Kubernetes, he uses 'vibe coding' for prototypes. Discovers Podroid (QEMU on Android) but finds it too slow. Begins researching proot, syscalls, and namespaces.",
+      "Starts a personal project called 'Ocean' — a Telegram and Discord bot monolith of 11,000 lines. Discovers Podroid (QEMU on Android) but finds it too slow. Begins researching proot, syscalls, and Linux namespaces.",
   },
   {
-    year: "2024",
-    title: "Birth of OpceanAI and First Steps of Doki",
+    year: "Jun 2024",
+    title: "OpceanAI founded. Doki begins.",
     description:
-      "June 5: Official founding of OpceanAI. The project leaves its personal repository stage and becomes an open organization. Agua designs the first architecture of Doki in Go — a rootless OCI runtime specifically for Android. Begins writing code and testing in Termux.",
+      "Official founding of OpceanAI as an open organization. Designs the first architecture of Doki in Go — a rootless OCI runtime specifically for Android. First tests in Termux.",
   },
   {
-    year: "2025",
-    title: "Lab Era (AI and Experimentation)",
+    year: "Dec 2025",
+    title: "Yuuki v0.1",
     description:
-      "January – November: First AI training attempts on a Snapdragon 685. Initial tests are slow (2.66 years estimated). Abandons the traditional approach and explores full fine-tuning and lightweight architectures. December: First functional prototype of Yuuki v0.1, based on GPT-2 with 82M parameters. Trained entirely on a mobile phone with zero cloud cost — proof of concept for the 'zero budget' methodology.",
+      "First functional prototype of Yuuki v0.1, based on GPT-2 (82M parameters). Trained entirely on a Snapdragon 685 mobile phone with zero cloud cost — proof of concept for the zero-budget training methodology.",
   },
   {
-    year: "2026",
-    title: "Development Explosion and Releases",
+    year: "May 2026",
+    title: "Doki goes public",
     description:
-      "January: First model 'Iris' trained (renamed to Yuuki). March – April: Accelerated Doki development. Rewrite of proot (doki-proot), internal DNS, first runners. May 4: First public Doki commit on GitHub. June 4: Doki v0.9.2 stable release with DokiLink-Lite and 190+ bugs fixed. June 5: Second OpceanAI anniversary. June 6: Doki v0.9.3 release with 12 runners, 244 CLI commands, and ARMv7 support. August (planned): Doki 0.10 with Podman, Kubernetes, native macOS, and doki-os.",
+      "First public Doki commit. June: v0.9.2 stable with DokiLink-Lite, 190+ bugs fixed. v0.9.3 adds 12 runners, 244 CLI commands, and ARMv7 support. Planned: 0.10 with Podman, Kubernetes, and native macOS.",
   },
 ]
 
-function AnimatedCounter({ target, duration = 2, color }: { target: number | string; duration?: number; color: string }) {
-  const [count, setCount] = useState(0)
-  const ref = useRef<HTMLDivElement>(null)
-  const [hasAnimated, setHasAnimated] = useState(false)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true)
-          const targetNum = typeof target === 'string' ? parseInt(target.replace(/\D/g, '')) || 0 : target
-          const startTime = Date.now()
-          const endTime = startTime + duration * 1000
-          
-          const animate = () => {
-            const now = Date.now()
-            const progress = Math.min((now - startTime) / (duration * 1000), 1)
-            const easeOut = 1 - Math.pow(1 - progress, 3)
-            setCount(Math.floor(easeOut * targetNum))
-            
-            if (now < endTime) {
-              requestAnimationFrame(animate)
-            } else {
-              setCount(targetNum)
-            }
-          }
-          
-          requestAnimationFrame(animate)
-        }
-      },
-      { threshold: 0.5 }
-    )
-
-    if (ref.current) {
-      observer.observe(ref.current)
-    }
-
-    return () => observer.disconnect()
-  }, [target, duration, hasAnimated])
-
-  const displayValue = typeof target === 'string' && target.includes('+') 
-    ? `${count}+` 
-    : count
-
-  return (
-    <div ref={ref} className="text-2xl font-bold font-mono" style={{ color }}>
-      {displayValue}
-    </div>
-  )
-}
-
-function StatsHero() {
-  const stats = [
-    { label: "Models", value: "20+", raw: 20, color: "#a371f7" },
-    { label: "Repos", value: "4", raw: 4, color: "#3fb950" },
-    { label: "Papers", value: "3", raw: 3, color: "#f78166" },
-    { label: "Isolation Levels", value: "12", raw: 12, color: "#4493f8" },
-  ]
-
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      {stats.map((stat, i) => (
-        <motion.div
-          key={stat.label}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.1, duration: 0.5 }}
-          className="p-4 border border-default rounded-md bg-canvas/80 hover:border-accent/50 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] card-hover cursor-pointer group"
-        >
-          <AnimatedCounter target={stat.value} color={stat.color} />
-          <div className="text-xs text-muted mt-1 group-hover:text-primary transition-colors">
-            {stat.label}
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  )
-}
-
 function Timeline() {
-  const [activeIndex, setActiveIndex] = useState(0)
-
   return (
-    <div className="mb-6">
-      <h2 className="text-base text-primary mb-4 font-semibold">Timeline</h2>
-      <div className="border border-default rounded-md p-6 bg-canvas">
-        <div className="relative">
-          <div className="absolute left-[7px] top-2 bottom-2 w-[2px] bg-[var(--border-default)]" />
-          <ul className="space-y-6">
-            {milestones.map((milestone, i) => (
-              <motion.li 
-                key={i} 
-                className="relative pl-6"
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                onViewportEnter={() => setActiveIndex(i)}
-              >
-                <div 
-                  className={`absolute left-0 top-1.5 w-4 h-4 rounded-full border-2 transition-colors duration-300 ${
-                    activeIndex >= i
-                      ? 'border-[var(--fg-accent)] bg-[var(--fg-accent)]'
-                      : 'border-default bg-canvas'
-                  }`}
-                />
-                <div className="flex items-center gap-3 mb-1">
-                  <span className="text-xs font-mono font-semibold text-accent">{milestone.year}</span>
-                  <span className="text-sm font-semibold text-primary">{milestone.title}</span>
-                </div>
-                <p className="text-xs text-muted leading-relaxed">{milestone.description}</p>
-              </motion.li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Static contribution pattern
-const contributionPattern = "0123401230123012340123012340123401230123012340123012340123401230123012340123012340123401234012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401234012340123"
-
-const levelColors = ["#151b23", "#0e4429", "#006d32", "#26a641", "#39d353"]
-
-function ContributionGraph() {
-  const [mounted, setMounted] = useState(false)
-  
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return (
-      <div className="grid grid-cols-[repeat(53,1fr)] gap-[3px]">
-        {Array.from({ length: 371 }).map((_, i) => (
-          <div key={i} className="aspect-square rounded-sm bg-canvas-inset" />
-        ))}
-      </div>
-    )
-  }
-
-  return (
-    <div className="grid grid-cols-[repeat(53,1fr)] gap-[3px]">
-      {contributionPattern.slice(0, 371).split("").map((level, i) => (
-        <motion.div
+    <div
+      style={{
+        position: "relative",
+        paddingLeft: "24px",
+        borderLeft: "2px solid var(--color-border-default)",
+      }}
+    >
+      {milestones.map((m, i) => (
+        <div
           key={i}
-          className="aspect-square rounded-sm"
-          style={{ backgroundColor: levelColors[parseInt(level)] }}
-          initial={{ opacity: 0, scale: 0 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: i * 0.001, duration: 0.2 }}
-        />
+          style={{
+            position: "relative",
+            marginBottom: i < milestones.length - 1 ? "24px" : 0,
+          }}
+        >
+          {/* Dot */}
+          <div
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              left: "-31px",
+              top: "4px",
+              width: "12px",
+              height: "12px",
+              borderRadius: "50%",
+              border: "2px solid var(--color-accent-fg)",
+              backgroundColor: "var(--color-canvas-default)",
+            }}
+          />
+          <div
+            style={{
+              fontSize: "12px",
+              fontFamily: "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace",
+              fontWeight: 600,
+              color: "var(--color-accent-fg)",
+              marginBottom: "2px",
+            }}
+          >
+            {m.year}
+          </div>
+          <div
+            style={{
+              fontSize: "14px",
+              fontWeight: 600,
+              color: "var(--color-fg-default)",
+              marginBottom: "4px",
+            }}
+          >
+            {m.title}
+          </div>
+          <p
+            style={{
+              fontSize: "12px",
+              color: "var(--color-fg-muted)",
+              lineHeight: "1.5",
+              margin: 0,
+            }}
+          >
+            {m.description}
+          </p>
+        </div>
       ))}
     </div>
   )
 }
 
+/* ------------------------------------------------------------------
+   Main component
+   ------------------------------------------------------------------ */
 export function OverviewTab() {
   return (
     <div>
-      {/* Stats Hero */}
-      <StatsHero />
-
-      {/* Pinned repos section */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base text-primary font-semibold">Pinned</h2>
-          <span className="text-xs text-muted">Customize your pins</span>
+      {/* Pinned repositories */}
+      <section aria-labelledby="pinned-heading" style={{ marginBottom: "32px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: "8px",
+          }}
+        >
+          <h2
+            id="pinned-heading"
+            style={{
+              fontSize: "14px",
+              fontWeight: 600,
+              color: "var(--color-fg-default)",
+              margin: 0,
+            }}
+          >
+            Pinned
+          </h2>
+          <a
+            href="https://github.com/awa-omg"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontSize: "12px",
+              color: "var(--color-accent-fg)",
+              textDecoration: "none",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.textDecoration = "underline" }}
+            onMouseLeave={(e) => { e.currentTarget.style.textDecoration = "none" }}
+          >
+            Customize your pins
+          </a>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {pinnedRepos.map((repo, i) => (
-            <motion.div
-              key={repo.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-            >
-              <RepoCard {...repo} />
-            </motion.div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            gap: "16px",
+          }}
+        >
+          {pinnedRepos.map((repo) => (
+            <RepoCard key={repo.name} {...repo} />
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Contribution graph */}
-      <div className="mb-6">
-        <h2 className="text-base text-primary mb-4 font-semibold">Contribution activity</h2>
-        <div className="border border-default rounded-md p-4 bg-canvas">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-muted">Contributions in the last year</span>
-          </div>
+      {/* Contribution activity */}
+      <section aria-labelledby="contributions-heading" style={{ marginBottom: "32px" }}>
+        <h2
+          id="contributions-heading"
+          style={{
+            fontSize: "14px",
+            fontWeight: 600,
+            color: "var(--color-fg-default)",
+            marginBottom: "16px",
+          }}
+        >
+          Contribution activity
+        </h2>
+        <div className="Box" style={{ padding: "16px" }}>
+          <p
+            style={{
+              fontSize: "12px",
+              color: "var(--color-fg-muted)",
+              marginBottom: "12px",
+            }}
+          >
+            Contributions in the last year
+          </p>
           <ContributionGraph />
-          <div className="flex items-center justify-end gap-1 mt-2 text-xs text-muted">
-            <span>Less</span>
-            <div className="w-[10px] h-[10px] rounded-sm bg-canvas-inset" />
-            <div className="w-[10px] h-[10px] rounded-sm bg-[#0e4429]" />
-            <div className="w-[10px] h-[10px] rounded-sm bg-[#006d32]" />
-            <div className="w-[10px] h-[10px] rounded-sm bg-[#26a641]" />
-            <div className="w-[10px] h-[10px] rounded-sm bg-[#39d353]" />
-            <span>More</span>
-          </div>
         </div>
-      </div>
+      </section>
 
       {/* Timeline */}
-      <Timeline />
+      <section aria-labelledby="timeline-heading">
+        <h2
+          id="timeline-heading"
+          style={{
+            fontSize: "14px",
+            fontWeight: 600,
+            color: "var(--color-fg-default)",
+            marginBottom: "16px",
+          }}
+        >
+          Timeline
+        </h2>
+        <div className="Box" style={{ padding: "24px" }}>
+          <Timeline />
+        </div>
+      </section>
     </div>
   )
 }

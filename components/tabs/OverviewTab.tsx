@@ -141,10 +141,10 @@ function StatsHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.1, duration: 0.5 }}
-          className="p-4 border border-[#3d444d] rounded-md bg-[#0d1117]/80 hover:border-[#4493f8]/50 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:shadow-[0_0_15px_rgba(31,111,235,0.1)] cursor-pointer group"
+          className="p-4 border border-default rounded-md bg-canvas/80 hover:border-accent/50 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] card-hover cursor-pointer group"
         >
           <AnimatedCounter target={stat.value} color={stat.color} />
-          <div className="text-xs text-[#9198a1] mt-1 group-hover:text-[#f0f6fc] transition-colors">
+          <div className="text-xs text-muted mt-1 group-hover:text-primary transition-colors">
             {stat.label}
           </div>
         </motion.div>
@@ -158,10 +158,10 @@ function Timeline() {
 
   return (
     <div className="mb-6">
-      <h2 className="text-base text-[#f0f6fc] mb-4 font-semibold">Timeline</h2>
-      <div className="border border-[#3d444d] rounded-md p-6 bg-[#0d1117]">
+      <h2 className="text-base text-primary mb-4 font-semibold">Timeline</h2>
+      <div className="border border-default rounded-md p-6 bg-canvas">
         <div className="relative">
-          <div className="absolute left-[7px] top-2 bottom-2 w-[2px] bg-[#3d444d]" />
+          <div className="absolute left-[7px] top-2 bottom-2 w-[2px] bg-[var(--border-default)]" />
           <ul className="space-y-6">
             {milestones.map((milestone, i) => (
               <motion.li 
@@ -173,19 +173,18 @@ function Timeline() {
                 transition={{ delay: i * 0.1, duration: 0.5 }}
                 onViewportEnter={() => setActiveIndex(i)}
               >
-                <motion.div 
-                  className="absolute left-0 top-1.5 w-4 h-4 rounded-full border-2 border-[#3d444d] bg-[#0d1117]"
-                  animate={{
-                    borderColor: activeIndex >= i ? '#4493f8' : '#3d444d',
-                    backgroundColor: activeIndex >= i ? '#4493f8' : '#0d1117',
-                  }}
-                  transition={{ duration: 0.3 }}
+                <div 
+                  className={`absolute left-0 top-1.5 w-4 h-4 rounded-full border-2 transition-colors duration-300 ${
+                    activeIndex >= i
+                      ? 'border-[var(--fg-accent)] bg-[var(--fg-accent)]'
+                      : 'border-default bg-canvas'
+                  }`}
                 />
                 <div className="flex items-center gap-3 mb-1">
-                  <span className="text-xs font-mono font-semibold text-[#4493f8]">{milestone.year}</span>
-                  <span className="text-sm font-semibold text-[#f0f6fc]">{milestone.title}</span>
+                  <span className="text-xs font-mono font-semibold text-accent">{milestone.year}</span>
+                  <span className="text-sm font-semibold text-primary">{milestone.title}</span>
                 </div>
-                <p className="text-xs text-[#9198a1] leading-relaxed">{milestone.description}</p>
+                <p className="text-xs text-muted leading-relaxed">{milestone.description}</p>
               </motion.li>
             ))}
           </ul>
@@ -211,7 +210,7 @@ function ContributionGraph() {
     return (
       <div className="grid grid-cols-[repeat(53,1fr)] gap-[3px]">
         {Array.from({ length: 371 }).map((_, i) => (
-          <div key={i} className="aspect-square rounded-sm bg-[#151b23]" />
+          <div key={i} className="aspect-square rounded-sm bg-canvas-inset" />
         ))}
       </div>
     )
@@ -243,8 +242,8 @@ export function OverviewTab() {
       {/* Pinned repos section */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base text-[#f0f6fc] font-semibold">Pinned</h2>
-          <span className="text-xs text-[#9198a1]">Customize your pins</span>
+          <h2 className="text-base text-primary font-semibold">Pinned</h2>
+          <span className="text-xs text-muted">Customize your pins</span>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {pinnedRepos.map((repo, i) => (
@@ -262,15 +261,15 @@ export function OverviewTab() {
 
       {/* Contribution graph */}
       <div className="mb-6">
-        <h2 className="text-base text-[#f0f6fc] mb-4 font-semibold">Contribution activity</h2>
-        <div className="border border-[#3d444d] rounded-md p-4 bg-[#0d1117]">
+        <h2 className="text-base text-primary mb-4 font-semibold">Contribution activity</h2>
+        <div className="border border-default rounded-md p-4 bg-canvas">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-[#9198a1]">Contributions in the last year</span>
+            <span className="text-sm text-muted">Contributions in the last year</span>
           </div>
           <ContributionGraph />
-          <div className="flex items-center justify-end gap-1 mt-2 text-xs text-[#9198a1]">
+          <div className="flex items-center justify-end gap-1 mt-2 text-xs text-muted">
             <span>Less</span>
-            <div className="w-[10px] h-[10px] rounded-sm bg-[#151b23]" />
+            <div className="w-[10px] h-[10px] rounded-sm bg-canvas-inset" />
             <div className="w-[10px] h-[10px] rounded-sm bg-[#0e4429]" />
             <div className="w-[10px] h-[10px] rounded-sm bg-[#006d32]" />
             <div className="w-[10px] h-[10px] rounded-sm bg-[#26a641]" />

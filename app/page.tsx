@@ -27,17 +27,17 @@ export default function Home() {
   const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || OverviewTab
 
   return (
-    <div className="min-h-screen bg-[#0d1117]">
+    <div className="min-h-screen bg-canvas">
       <TopHeader />
 
-      <section className="border-b border-[#3d444d]">
+      <section className="border-b border-default">
         <div className="max-w-[1280px] mx-auto px-4 py-16 md:py-24">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
             <div className="max-w-2xl">
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-sm font-mono text-[#3fb950] mb-4 tracking-wide"
+                className="text-sm font-mono text-success mb-4 tracking-wide"
               >
                 awa &middot; OpceanAI
               </motion.p>
@@ -45,16 +45,16 @@ export default function Home() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="text-[40px] md:text-[56px] font-semibold leading-[1.1] text-[#f0f6fc] tracking-[-0.02em]"
+                className="text-[40px] md:text-[56px] font-semibold leading-[1.1] text-primary tracking-[-0.02em]"
               >
                 Infrastructure and AI for the{" "}
-                <span className="text-[#4493f8]">next billion devices</span>
+                <span className="text-accent">next billion devices</span>
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="mt-4 text-lg text-[#9198a1] max-w-xl leading-relaxed"
+                className="mt-4 text-lg text-muted max-w-xl leading-relaxed"
               >
                 Building open source infrastructure — from OCI containers on Android to LLMs
                 trained on $150 phones. Creator of Doki, Yuuki, ToS, and the Imprint Theory framework.
@@ -69,7 +69,7 @@ export default function Home() {
                   href="https://github.com/awa-omg"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-[#238636] border border-[#2ea043] rounded-md hover:bg-[#29903b] hover:border-[#3fb950] transition-all duration-200"
+                  className="btn-primary inline-flex items-center gap-2"
                 >
                   Follow on GitHub
                   <ArrowUpRight size={16} />
@@ -78,7 +78,7 @@ export default function Home() {
                   href="https://github.com/sponsors/awa-omg"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#f0f6fc] bg-[#151b23] border border-[#3d444d] rounded-md hover:bg-[#3d444d] transition-all duration-200"
+                  className="btn-default inline-flex items-center gap-2"
                 >
                   Sponsor
                   <ChevronRight size={16} />
@@ -87,7 +87,7 @@ export default function Home() {
                   href="https://github.com/OpceanAI/Doki"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#4493f8] hover:text-[#4493f8] hover:underline transition-all duration-200"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-accent hover:underline transition-all duration-200"
                 >
                   Explore Doki &rarr;
                 </a>
@@ -97,13 +97,13 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="hidden md:flex items-center justify-center w-[340px] h-[340px] rounded-xl border border-[#3d444d] bg-[#151b23] flex-shrink-0"
+              className="hidden md:flex items-center justify-center w-[340px] h-[340px] rounded-xl border border-default bg-canvas-muted flex-shrink-0"
             >
               <div className="text-center">
-                <svg height="80" viewBox="0 0 16 16" width="80" fill="#9198a1" className="mx-auto mb-3">
+                <svg height="80" viewBox="0 0 16 16" width="80" fill="var(--fg-muted)" className="mx-auto mb-3">
                   <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z" />
                 </svg>
-                <p className="text-sm text-[#9198a1]">awa-omg</p>
+                <p className="text-sm text-muted">awa-omg</p>
               </div>
             </motion.div>
           </div>

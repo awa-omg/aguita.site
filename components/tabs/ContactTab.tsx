@@ -77,13 +77,13 @@ export function ContactTab() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <p className="text-sm text-[#9198a1] mb-6">
+      <p className="text-sm text-muted mb-6">
         Get in touch for collaborations, research opportunities, or open source contributions.
       </p>
 
       {/* Sponsor */}
-      <div className="mb-8 p-4 border border-[#3d444d] rounded-md bg-[#151b23]">
-        <h3 className="text-sm font-semibold text-[#f0f6fc] mb-3">Support my work</h3>
+      <div className="mb-8 p-4 border border-default rounded-md bg-canvas-muted">
+        <h3 className="text-sm font-semibold text-primary mb-3">Support my work</h3>
         <iframe 
           src="https://github.com/sponsors/awa-omg/button" 
           title="Sponsor awa-omg" 
@@ -95,8 +95,8 @@ export function ContactTab() {
 
       {/* Websites */}
       <div className="mb-8">
-        <h3 className="text-sm font-semibold text-[#f0f6fc] mb-3 flex items-center gap-2">
-          <Globe size={16} className="text-[#9198a1]" />
+        <h3 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
+          <Globe size={16} className="text-muted" />
           Websites
         </h3>
         <ul className="space-y-2">
@@ -106,12 +106,12 @@ export function ContactTab() {
                 href={site.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-[#4493f8] hover:underline"
+                className="flex items-center gap-2 text-sm text-accent hover:underline"
               >
                 {site.url}
                 <ExternalLink size={12} />
               </a>
-              <span className="text-xs text-[#9198a1]">{site.label}</span>
+              <span className="text-xs text-muted">{site.label}</span>
             </li>
           ))}
         </ul>
@@ -119,8 +119,8 @@ export function ContactTab() {
 
       {/* Email */}
       <div className="mb-8">
-        <h3 className="text-sm font-semibold text-[#f0f6fc] mb-3 flex items-center gap-2">
-          <Mail size={16} className="text-[#9198a1]" />
+        <h3 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
+          <Mail size={16} className="text-muted" />
           Email
         </h3>
         <ul className="space-y-2">
@@ -128,11 +128,11 @@ export function ContactTab() {
             <li key={item.email}>
               <a
                 href={`mailto:${item.email}`}
-                className="text-sm text-[#4493f8] hover:underline"
+                className="text-sm text-accent hover:underline"
               >
                 {item.email}
               </a>
-              <span className="text-xs text-[#9198a1] ml-2">({item.label})</span>
+              <span className="text-xs text-muted ml-2">({item.label})</span>
             </li>
           ))}
         </ul>
@@ -140,7 +140,7 @@ export function ContactTab() {
 
       {/* Social Links */}
       <div>
-        <h3 className="text-sm font-semibold text-[#f0f6fc] mb-3">Profiles</h3>
+        <h3 className="text-sm font-semibold text-primary mb-3">Profiles</h3>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {links.map((link) => (
             <li key={link.url}>
@@ -148,16 +148,16 @@ export function ContactTab() {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 border border-[#3d444d] rounded-md bg-[#0d1117] hover:bg-[#151b23] hover:border-[#9198a1] transition-colors"
+                className="flex items-center gap-3 p-3 border border-default rounded-md bg-canvas hover:bg-canvas-muted hover:border-accent transition-colors"
               >
                 <span style={{ color: link.color }}>
                   <link.icon />
                 </span>
                 <div className="flex-1 min-w-0">
-                  <span className="text-sm text-[#f0f6fc] block">{link.label}</span>
-                  <span className="text-xs text-[#9198a1] block truncate">{link.username}</span>
+                  <span className="text-sm text-primary block">{link.label}</span>
+                  <span className="text-xs text-muted block truncate">{link.username}</span>
                 </div>
-                <ExternalLink size={14} className="text-[#9198a1] flex-shrink-0" />
+                <ExternalLink size={14} className="text-muted flex-shrink-0" />
               </a>
             </li>
           ))}

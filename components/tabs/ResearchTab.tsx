@@ -77,11 +77,11 @@ export function ResearchTab() {
     <div>
       {/* AI Models Section */}
       <div className="mb-10">
-        <h2 className="text-xl font-bold text-[#f0f6fc] mb-2 flex items-center gap-2">
+        <h2 className="text-xl font-bold text-primary mb-2 flex items-center gap-2">
           <Bot size={22} className="text-[#a371f7]" />
           AI Models
         </h2>
-        <p className="text-sm text-[#9198a1] mb-5">
+        <p className="text-sm text-muted mb-5">
           Open-source models and datasets from the OpceanAI lab.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -95,20 +95,20 @@ export function ResearchTab() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.06, duration: 0.35 }}
-              className="group block p-4 border border-[#3d444d] rounded-md bg-[#0d1117] hover:border-[#a371f7]/50 transition-colors"
+              className="group block p-4 border border-default rounded-md bg-canvas hover:border-[#a371f7]/50 transition-colors"
             >
               <div className="flex items-start justify-between gap-3 mb-2">
-                <h3 className="text-sm font-semibold text-[#f0f6fc] group-hover:text-[#a371f7] transition-colors">
+                <h3 className="text-sm font-semibold text-primary group-hover:text-[#a371f7] transition-colors">
                   {model.name}
                 </h3>
-                <ExternalLink size={14} className="text-[#9198a1] group-hover:text-[#f0f6fc] flex-shrink-0 mt-0.5 transition-colors" />
+                <ExternalLink size={14} className="text-muted group-hover:text-primary flex-shrink-0 mt-0.5 transition-colors" />
               </div>
-              <p className="text-xs text-[#9198a1] mb-3 leading-relaxed">{model.description}</p>
+              <p className="text-xs text-muted mb-3 leading-relaxed">{model.description}</p>
               <div className="flex flex-wrap gap-1.5">
                 {model.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-2 py-0.5 text-[10px] bg-[#151b23] text-[#9198a1] rounded-full border border-[#3d444d]"
+                    className="px-2 py-0.5 text-[10px] bg-canvas-muted text-muted rounded-full border border-default"
                   >
                     {tag}
                   </span>
@@ -121,11 +121,11 @@ export function ResearchTab() {
 
       {/* Papers Section */}
       <div className="mb-10">
-        <h2 className="text-xl font-bold text-[#f0f6fc] mb-2 flex items-center gap-2">
+        <h2 className="text-xl font-bold text-primary mb-2 flex items-center gap-2">
           <BookOpen size={22} className="text-[#f78166]" />
           Papers
         </h2>
-        <p className="text-sm text-[#9198a1] mb-5">
+        <p className="text-sm text-muted mb-5">
           Research publications and technical papers.
         </p>
         <div className="space-y-4">
@@ -139,30 +139,30 @@ export function ResearchTab() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08, duration: 0.35 }}
-              className="group block p-5 border border-[#3d444d] rounded-md bg-[#0d1117] hover:border-[#f78166]/50 transition-colors"
+              className="group block p-5 border border-default rounded-md bg-canvas hover:border-[#f78166]/50 transition-colors"
             >
               <div className="flex items-start gap-3">
-                <div className="p-1.5 bg-[#151b23] rounded-md flex-shrink-0 mt-0.5">
-                  <FileText size={14} className="text-[#9198a1]" />
+                <div className="p-1.5 bg-canvas-muted rounded-md flex-shrink-0 mt-0.5">
+                  <FileText size={14} className="text-muted" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h3 className="text-sm font-semibold text-[#f0f6fc] group-hover:text-[#f78166] transition-colors">
+                      <h3 className="text-sm font-semibold text-primary group-hover:text-[#f78166] transition-colors">
                         {paper.title}
                       </h3>
-                      <p className="text-xs text-[#9198a1] mt-1 leading-relaxed">{paper.subtitle}</p>
+                      <p className="text-xs text-muted mt-1 leading-relaxed">{paper.subtitle}</p>
                     </div>
-                    <ExternalLink size={14} className="text-[#9198a1] group-hover:text-[#f0f6fc] flex-shrink-0 mt-1 transition-colors" />
+                    <ExternalLink size={14} className="text-muted group-hover:text-primary flex-shrink-0 mt-1 transition-colors" />
                   </div>
                   {paper.doi && (
-                    <p className="text-[10px] text-[#656c76] mt-2 font-mono">DOI: {paper.doi}</p>
+                    <p className="text-[10px] text-muted mt-2 font-mono">DOI: {paper.doi}</p>
                   )}
                   <div className="flex flex-wrap gap-1.5 mt-3">
                     {paper.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-2 py-0.5 text-[10px] bg-[#151b23] text-[#9198a1] rounded-full border border-[#3d444d]"
+                        className="px-2 py-0.5 text-[10px] bg-canvas-muted text-muted rounded-full border border-default"
                       >
                         {tag}
                       </span>
@@ -177,14 +177,14 @@ export function ResearchTab() {
 
       {/* Datasets Section */}
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-[#f0f6fc] mb-2 flex items-center gap-2">
-          <Database size={22} className="text-[#3fb950]" />
+        <h2 className="text-xl font-bold text-primary mb-2 flex items-center gap-2">
+          <Database size={22} className="text-success" />
           Datasets
         </h2>
-        <p className="text-sm text-[#9198a1] mb-5">
+        <p className="text-sm text-muted mb-5">
           Public datasets used in research and model training.
         </p>
-        <div className="border border-[#3d444d] rounded-md bg-[#0d1117] divide-y divide-[#3d444d]">
+        <div className="border border-default rounded-md bg-canvas divide-y divide-[var(--border-default)]">
           {datasets.map((ds, i) => (
             <motion.div
               key={ds.name}
@@ -192,12 +192,12 @@ export function ResearchTab() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.06, duration: 0.3 }}
-              className="flex items-center gap-3 px-4 py-3 hover:bg-[#151b23] transition-colors"
+              className="flex items-center gap-3 px-4 py-3 hover:bg-canvas-muted transition-colors"
             >
-              <Database size={14} className="text-[#3fb950] flex-shrink-0" />
+              <Database size={14} className="text-success flex-shrink-0" />
               <div>
-                <span className="text-sm text-[#f0f6fc]">{ds.name}</span>
-                <span className="text-xs text-[#9198a1] ml-2">{ds.description}</span>
+                <span className="text-sm text-primary">{ds.name}</span>
+                <span className="text-xs text-muted ml-2">{ds.description}</span>
               </div>
             </motion.div>
           ))}

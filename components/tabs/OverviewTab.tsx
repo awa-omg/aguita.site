@@ -57,43 +57,49 @@ const pinnedRepos = [
 const PATTERN =
   "0123401230123012340123012340123401230123012340123012340123401230123012340123012340123401234012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401230123012340123012340123401234012340123"
 
+function cellColor(level: number): string {
+  if (level === 1) return "var(--color-calendar-graph-day-L1-bg)"
+  if (level === 2) return "var(--color-calendar-graph-day-L2-bg)"
+  if (level === 3) return "var(--color-calendar-graph-day-L3-bg)"
+  if (level === 4) return "var(--color-calendar-graph-day-L4-bg)"
+  return "var(--color-calendar-graph-day-bg)"
+}
+
 function ContributionGraph() {
-  const cells = PATTERN.slice(0, 371).split("")
+  // 53 columns × 7 rows = 371 cells. Each cell is 10px + 2px gap.
+  const CELL = 10
+  const GAP  = 2
+  const COLS = 53
+  const ROWS = 7
+  const cells = PATTERN.slice(0, COLS * ROWS).split("")
 
   return (
-    <div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(53, 1fr)",
-          gap: "3px",
-        }}
+    <div style={{ overflowX: "auto" }}>
+      {/* Fixed pixel grid — avoids aspect-ratio collapse in fr columns */}
+      <svg
+        role="img"
+        aria-label="Contribution graph"
+        width={COLS * (CELL + GAP) - GAP}
+        height={ROWS * (CELL + GAP) - GAP}
+        style={{ display: "block" }}
       >
         {cells.map((level, i) => {
-          const lvl = parseInt(level, 10)
-          const varName =
-            lvl === 0
-              ? "var(--color-calendar-graph-day-bg)"
-              : lvl === 1
-              ? "var(--color-calendar-graph-day-L1-bg)"
-              : lvl === 2
-              ? "var(--color-calendar-graph-day-L2-bg)"
-              : lvl === 3
-              ? "var(--color-calendar-graph-day-L3-bg)"
-              : "var(--color-calendar-graph-day-L4-bg)"
+          const col = Math.floor(i / ROWS)
+          const row = i % ROWS
           return (
-            <div
+            <rect
               key={i}
-              style={{
-                aspectRatio: "1",
-                borderRadius: "2px",
-                backgroundColor: varName,
-              }}
-              aria-hidden="true"
+              x={col * (CELL + GAP)}
+              y={row * (CELL + GAP)}
+              width={CELL}
+              height={CELL}
+              rx={2}
+              fill={cellColor(parseInt(level, 10))}
             />
           )
         })}
-      </div>
+      </svg>
+      {/* Legend */}
       <div
         style={{
           display: "flex",
@@ -107,24 +113,9 @@ function ContributionGraph() {
       >
         <span>Less</span>
         {[0, 1, 2, 3, 4].map((lvl) => (
-          <div
-            key={lvl}
-            style={{
-              width: "10px",
-              height: "10px",
-              borderRadius: "2px",
-              backgroundColor:
-                lvl === 0
-                  ? "var(--color-calendar-graph-day-bg)"
-                  : lvl === 1
-                  ? "var(--color-calendar-graph-day-L1-bg)"
-                  : lvl === 2
-                  ? "var(--color-calendar-graph-day-L2-bg)"
-                  : lvl === 3
-                  ? "var(--color-calendar-graph-day-L3-bg)"
-                  : "var(--color-calendar-graph-day-L4-bg)",
-            }}
-          />
+          <svg key={lvl} width="10" height="10" aria-hidden="true">
+            <rect width="10" height="10" rx="2" fill={cellColor(lvl)} />
+          </svg>
         ))}
         <span>More</span>
       </div>

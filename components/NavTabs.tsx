@@ -79,7 +79,7 @@ export function NavTabs({ activeTab, onTabChange }: NavTabsProps) {
                 id={`tab-${id}`}
                 onClick={() => onTabChange(id)}
                 className={`UnderlineNav-item${isActive ? " selected" : ""}`}
-                style={{ background: "none", border: "none", cursor: "pointer" }}
+                style={{ background: "none", border: "none", cursor: "pointer", gap: "8px" }}
               >
                 <Icon />
                 <span>{label}</span>

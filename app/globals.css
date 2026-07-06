@@ -6,6 +6,8 @@
    Light (default) + Dark ([data-theme="dark"])
    ============================================================ */
 
+@layer base {
+
 :root {
   /* === Canvas (backgrounds) === */
   --color-canvas-default:      #ffffff;
@@ -245,6 +247,8 @@
   --color-topic-tag-border:      rgba(56, 139, 253, 0.3);
   --color-topic-tag-text:        #58a6ff;
 }
+
+} /* end @layer base — Primer color tokens */
 
 /* ============================================================
    Tailwind v4 theme mapping

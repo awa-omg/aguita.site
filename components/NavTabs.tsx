@@ -18,7 +18,7 @@ const tabs = [
 
 export function NavTabs({ activeTab, onTabChange }: NavTabsProps) {
   return (
-    <nav className="border-b border-[#21262d] mb-4 overflow-x-auto sticky top-14 z-40 bg-[#0d1117]">
+    <nav className="border-b border-[#3d444d] mb-4 overflow-x-auto sticky top-14 z-40 bg-[#0d1117]">
       <ul className="flex gap-0 -mb-px">
         {tabs.map((tab) => {
           const Icon = tab.icon
@@ -29,15 +29,15 @@ export function NavTabs({ activeTab, onTabChange }: NavTabsProps) {
                 onClick={() => onTabChange(tab.id)}
                 className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all duration-200 whitespace-nowrap ${
                   isActive
-                    ? "text-[#e6edf3] border-[#f78166]"
-                    : "text-[#8b949e] border-transparent hover:text-[#e6edf3] hover:border-[#30363d]"
+                    ? "text-[#f0f6fc] border-[#f78166]"
+                    : "text-[#9198a1] border-transparent hover:text-[#f0f6fc] hover:border-[#3d444d]"
                 }`}
               >
                 <Icon size={16} className={isActive ? "text-[#f78166]" : ""} />
                 <span>{tab.label}</span>
                 {tab.count !== undefined && (
                   <span className={`px-1.5 py-0.5 text-xs rounded-full ${
-                    isActive ? "bg-[#30363d] text-[#e6edf3]" : "bg-[#21262d] text-[#8b949e]"
+                    isActive ? "bg-[#3d444d] text-[#f0f6fc]" : "bg-[#151b23] text-[#9198a1]"
                   }`}>
                     {tab.count}
                   </span>

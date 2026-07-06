@@ -64,20 +64,20 @@ export function RepositoriesTab() {
       {/* Search and filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8b949e]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9198a1]" />
           <input
             type="text"
             placeholder="Find a repository..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-[5px] text-sm bg-[#0d1117] border border-[#30363d] rounded-md text-[#e6edf3] placeholder-[#8b949e] focus:outline-none focus:border-[#388bfd] focus:ring-1 focus:ring-[#388bfd]"
+            className="w-full pl-9 pr-3 py-[5px] text-sm bg-[#0d1117] border border-[#3d444d] rounded-md text-[#f0f6fc] placeholder-[#9198a1] focus:outline-none focus:border-[#4493f8] focus:ring-1 focus:ring-[#4493f8]"
           />
         </div>
         <div className="flex gap-2">
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-3 py-[5px] text-sm bg-[#21262d] border border-[#30363d] rounded-md text-[#c9d1d9] focus:outline-none focus:border-[#388bfd]"
+            className="px-3 py-[5px] text-sm bg-[#151b23] border border-[#3d444d] rounded-md text-[#f0f6fc] focus:outline-none focus:border-[#4493f8]"
           >
             <option value="all">Type</option>
             <option value="public">Public</option>
@@ -88,7 +88,7 @@ export function RepositoriesTab() {
           <select
             value={languageFilter}
             onChange={(e) => setLanguageFilter(e.target.value)}
-            className="px-3 py-[5px] text-sm bg-[#21262d] border border-[#30363d] rounded-md text-[#c9d1d9] focus:outline-none focus:border-[#388bfd]"
+            className="px-3 py-[5px] text-sm bg-[#151b23] border border-[#3d444d] rounded-md text-[#f0f6fc] focus:outline-none focus:border-[#4493f8]"
           >
             <option value="all">Language</option>
             <option value="Python">Python</option>
@@ -101,7 +101,7 @@ export function RepositoriesTab() {
       </div>
 
       {/* Repository list */}
-      <ul className="divide-y divide-[#21262d]">
+      <ul className="divide-y divide-[#3d444db3]">
         {filteredRepos.map((repo, i) => (
           <motion.li 
             key={repo.name} 
@@ -117,16 +117,16 @@ export function RepositoriesTab() {
                     href={repo.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#388bfd] font-semibold text-xl hover:underline"
+                    className="text-[#4493f8] font-semibold text-xl hover:underline"
                   >
                     {repo.name}
                   </a>
-                  <span className="text-xs text-[#8b949e] border border-[#30363d] rounded-full px-2 py-0.5">
+                  <span className="text-xs text-[#9198a1] border border-[#3d444d] rounded-full px-2 py-0.5">
                     Public
                   </span>
                 </div>
-                <p className="text-sm text-[#8b949e] mb-2 max-w-2xl">{repo.description}</p>
-                <div className="flex items-center gap-4 text-xs text-[#8b949e]">
+                <p className="text-sm text-[#9198a1] mb-2 max-w-2xl">{repo.description}</p>
+                <div className="flex items-center gap-4 text-xs text-[#9198a1]">
                   {repo.language && (
                     <span className="flex items-center gap-1">
                       <Circle size={12} fill={repo.languageColor} stroke="none" />
@@ -148,7 +148,7 @@ export function RepositoriesTab() {
                   <span>{repo.updatedAt}</span>
                 </div>
               </div>
-              <button className="flex items-center gap-1 px-3 py-[3px] text-xs font-medium bg-[#21262d] border border-[#30363d] rounded-md text-[#c9d1d9] hover:bg-[#30363d] hover:border-[#8b949e] transition-colors">
+              <button className="flex items-center gap-1 px-3 py-[3px] text-xs font-medium bg-[#151b23] border border-[#3d444d] rounded-md text-[#f0f6fc] hover:bg-[#3d444d] hover:border-[#9198a1] transition-colors">
                 <Star size={14} />
                 Star
               </button>

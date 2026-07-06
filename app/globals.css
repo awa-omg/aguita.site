@@ -3,60 +3,78 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* GitHub Dark Theme */
+/* GitHub Dark Theme — exact Primer tokens */
 :root {
-  --background: #0d1117;
-  --foreground: #e6edf3;
-  --card: #161b22;
-  --card-foreground: #e6edf3;
-  --popover: #161b22;
-  --popover-foreground: #e6edf3;
-  --primary: #238636;
-  --primary-foreground: #ffffff;
-  --secondary: #21262d;
-  --secondary-foreground: #c9d1d9;
-  --muted: #161b22;
-  --muted-foreground: #8b949e;
-  --accent: #388bfd;
-  --accent-foreground: #ffffff;
-  --destructive: #f85149;
-  --destructive-foreground: #ffffff;
-  --border: #30363d;
-  --input: #21262d;
-  --ring: #388bfd;
-  --radius: 6px;
-  --cyan: #00d4ff;
-  --purple: #a371f7;
+  --bg-default: #0d1117;
+  --bg-muted: #151b23;
+  --bg-inset: #010409;
+  --bg-emphasis: #3d444d;
+  --bg-accent-emphasis: #1f6feb;
+  --bg-success-emphasis: #238636;
+  --bg-danger-emphasis: #da3633;
+
+  --fg-default: #f0f6fc;
+  --fg-muted: #9198a1;
+  --fg-accent: #4493f8;
+  --fg-success: #3fb950;
+  --fg-danger: #f85149;
+  --fg-onEmphasis: #ffffff;
+  --fg-link: #4493f8;
+
+  --border-default: #3d444d;
+  --border-muted: #3d444db3;
+  --border-emphasis: #656c76;
+
+  --brand-radius-small: 4px;
+  --brand-radius-medium: 8px;
+  --brand-radius-large: 16px;
+  --brand-radius-xlarge: 24px;
+
+  --brand-easing-default: cubic-bezier(0.16, 1, 0.3, 1);
+  --brand-easing-glide: cubic-bezier(0.33, 1, 0.68, 1);
+  --brand-duration-default: 0.6s;
+  --brand-duration-fast: 0.3s;
+  --brand-duration-faster: 0.2s;
+
+  --button-primary-bg: #238636;
+  --button-primary-hover: #29903b;
+  --button-primary-active: #2e9a40;
+  --button-default-bg: #151b23;
+  --button-default-hover: #1c2129;
+  --button-default-border: #3d444d;
+
+  --control-medium: 43px;
+  --control-large: 60px;
+
+  --focus-outline: 2px solid #1f6feb;
 }
 
 @theme inline {
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
   --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-cyan: var(--cyan);
-  --color-purple: var(--purple);
-  --radius-sm: calc(var(--radius) - 2px);
-  --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) + 2px);
+  --color-background: var(--bg-default);
+  --color-foreground: var(--fg-default);
+  --color-card: var(--bg-muted);
+  --color-card-foreground: var(--fg-default);
+  --color-popover: var(--bg-muted);
+  --color-popover-foreground: var(--fg-default);
+  --color-primary: var(--button-primary-bg);
+  --color-primary-foreground: var(--fg-onEmphasis);
+  --color-secondary: var(--button-default-bg);
+  --color-secondary-foreground: var(--fg-default);
+  --color-muted: var(--bg-muted);
+  --color-muted-foreground: var(--fg-muted);
+  --color-accent: var(--fg-accent);
+  --color-accent-foreground: var(--fg-onEmphasis);
+  --color-destructive: var(--fg-danger);
+  --color-destructive-foreground: var(--fg-onEmphasis);
+  --color-border: var(--border-default);
+  --color-input: var(--button-default-bg);
+  --color-ring: var(--fg-accent);
+  --radius-sm: var(--brand-radius-small);
+  --radius-md: var(--brand-radius-medium);
+  --radius-lg: var(--brand-radius-large);
 }
 
 @layer base {
@@ -69,53 +87,34 @@
   html {
     scroll-behavior: smooth;
   }
-  html.lenis, html.lenis body {
-    height: auto;
-  }
-  .lenis.lenis-smooth {
-    scroll-behavior: auto !important;
-  }
-  .lenis.lenis-smooth [data-lenis-prevent] {
-    overscroll-behavior: contain;
-  }
-  .lenis.lenis-stopped {
-    overflow: hidden;
-  }
-  .lenis.lenis-smooth iframe {
-    pointer-events: none;
-  }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar — GitHub style */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0d1117;
+  background: var(--bg-default);
 }
 ::-webkit-scrollbar-thumb {
-  background: #30363d;
+  background: var(--border-emphasis);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #484f58;
+  background: #656c76;
 }
 
-/* Selection */
 ::selection {
-  background: rgba(56, 139, 253, 0.3);
-  color: #e6edf3;
+  background: rgba(31, 111, 235, 0.3);
+  color: var(--fg-default);
 }
 
-/* Focus ring */
 :focus-visible {
-  outline: 2px solid rgba(56, 139, 253, 0.5);
+  outline: var(--focus-outline);
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

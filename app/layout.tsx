@@ -44,7 +44,19 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased">
+      <body
+        style={{
+          margin: 0,
+          backgroundColor: "var(--color-canvas-default)",
+          color: "var(--color-fg-default)",
+          fontFamily:
+            "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'",
+          fontSize: "14px",
+          lineHeight: "1.5",
+          WebkitFontSmoothing: "antialiased" as const,
+          MozOsxFontSmoothing: "grayscale" as const,
+        }}
+      >
         {children}
         <Analytics />
       </body>

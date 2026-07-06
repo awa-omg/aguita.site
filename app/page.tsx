@@ -53,7 +53,7 @@ export default function Home() {
           {/* Main content column */}
           <div style={{ flex: 1, minWidth: 0 }}>
             <NavTabs activeTab={activeTab} onTabChange={setActiveTab} />
-            <div style={{ paddingTop: "16px" }}>
+            <div style={{ paddingTop: "16px" }} className="profile-main-padding">
               <ActiveComponent />
             </div>
           </div>
@@ -66,6 +66,10 @@ export default function Home() {
         @media (max-width: 767px) {
           .profile-layout {
             flex-direction: column;
+            gap: 0 !important;
+          }
+          .profile-main-padding {
+            padding-top: 0 !important;
           }
         }
       `}</style>

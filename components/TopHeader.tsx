@@ -65,7 +65,7 @@ export function TopHeader() {
         }}
       >
         {/* Left: logo + search */}
-        <div style={{ display: "flex", alignItems: "center", gap: "16px", flex: 1 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px", flex: "1 1 0", minWidth: 0 }}>
           {/* GitHub mark */}
           <a
             href="/"
@@ -161,13 +161,14 @@ export function TopHeader() {
           </nav>
         </div>
 
-        {/* Right: controls */}
+        {/* Right: controls — desktop shows GitHub + Sponsor, mobile only shows theme toggle */}
         <div style={{ display: "flex", alignItems: "center", gap: "4px", flexShrink: 0 }}>
-          {/* Theme toggle */}
+          {/* Theme toggle — always visible */}
           <ThemeToggle />
 
-          {/* Divider */}
+          {/* Divider — hidden on mobile */}
           <div
+            className="header-cta-hidden-mobile"
             style={{
               width: "1px",
               height: "24px",
@@ -177,12 +178,12 @@ export function TopHeader() {
             aria-hidden="true"
           />
 
-          {/* Star CTA */}
+          {/* Star CTA — hidden on mobile */}
           <a
             href="https://github.com/awa-omg"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-sm"
+            className="btn btn-sm header-cta-hidden-mobile"
             style={{
               backgroundColor: "rgba(255,255,255,0.1)",
               borderColor: "rgba(255,255,255,0.2)",
@@ -195,12 +196,12 @@ export function TopHeader() {
             <span>GitHub</span>
           </a>
 
-          {/* Sponsor */}
+          {/* Sponsor — hidden on mobile */}
           <a
             href="https://github.com/sponsors/awa-omg"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-primary btn-sm"
+            className="btn btn-primary btn-sm header-cta-hidden-mobile"
           >
             Sponsor
           </a>
@@ -210,7 +211,8 @@ export function TopHeader() {
       <style>{`
         @media (max-width: 767px) {
           .header-search-hidden-mobile { display: none !important; }
-          .header-nav-hidden-mobile { display: none !important; }
+          .header-nav-hidden-mobile    { display: none !important; }
+          .header-cta-hidden-mobile    { display: none !important; }
         }
       `}</style>
     </header>

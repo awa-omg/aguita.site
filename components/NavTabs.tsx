@@ -55,6 +55,7 @@ export function NavTabs({ activeTab, onTabChange }: NavTabsProps) {
   return (
     <nav
       aria-label="Profile tabs"
+      className="UnderlineNav-wrapper"
       style={{
         position: "sticky",
         top: "62px",
@@ -100,6 +101,20 @@ export function NavTabs({ activeTab, onTabChange }: NavTabsProps) {
           )
         })}
       </ul>
+      <style>{`
+        .UnderlineNav {
+          -webkit-overflow-scrolling: touch;
+        }
+        @media (max-width: 767px) {
+          .UnderlineNav-wrapper {
+            position: static !important;
+          }
+          .UnderlineNav-item {
+            padding: 8px 10px;
+            font-size: 13px;
+          }
+        }
+      `}</style>
     </nav>
   )
 }

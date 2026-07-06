@@ -1,151 +1,127 @@
 "use client"
 
-import { useEffect, useRef, useState, useCallback } from "react"
+import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { TopHeader } from "@/components/TopHeader"
 import { ProfileSidebar } from "@/components/ProfileSidebar"
 import { NavTabs } from "@/components/NavTabs"
-import { CustomCursor } from "@/components/CustomCursor"
-import { WebGLBackground } from "@/components/WebGLBackground"
-import { TerminalOverlay } from "@/components/TerminalOverlay"
-import { NowPlaying } from "@/components/NowPlaying"
-import { EasterEggs, DevMode } from "@/components/EasterEggs"
+import { Footer } from "@/components/Footer"
 import { OverviewTab } from "@/components/tabs/OverviewTab"
 import { RepositoriesTab } from "@/components/tabs/RepositoriesTab"
-import { ModelsTab } from "@/components/tabs/ModelsTab"
-import { PapersTab } from "@/components/tabs/PapersTab"
-import { OpceanAITab } from "@/components/tabs/OpceanAITab"
-import { LabTab } from "@/components/tabs/LabTab"
-import { NowTab } from "@/components/tabs/NowTab"
-import { StarsTab } from "@/components/tabs/StarsTab"
+import { ProductsTab } from "@/components/tabs/ProductsTab"
+import { ResearchTab } from "@/components/tabs/ResearchTab"
 import { ContactTab } from "@/components/tabs/ContactTab"
-import dynamic from "next/dynamic"
-import Lenis from "lenis"
-
-const AIAssistant = dynamic(() => import("@/components/AIAssistant").then((mod) => mod.AIAssistant), {
-  ssr: false,
-})
+import { ChevronRight, ArrowUpRight } from "lucide-react"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("overview")
-  const [terminalOpen, setTerminalOpen] = useState(false)
-  const [konamiActive, setKonamiActive] = useState(false)
-  const lenisRef = useRef<Lenis | null>(null)
-
-  // Initialize Lenis smooth scroll
-  useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-    })
-
-    lenisRef.current = lenis
-
-    function raf(time: number) {
-      lenis.raf(time)
-      requestAnimationFrame(raf)
-    }
-    requestAnimationFrame(raf)
-
-    return () => {
-      lenis.destroy()
-    }
-  }, [])
-
-  // Konami code handler
-  useEffect(() => {
-    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']
-    let konamiIndex = 0
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Terminal toggle
-      if (e.key === '`' || e.key === '~') {
-        e.preventDefault()
-        setTerminalOpen(prev => !prev)
-        return
-      }
-
-      // Konami code
-      if (e.key === konamiCode[konamiIndex]) {
-        konamiIndex++
-        if (konamiIndex === konamiCode.length) {
-          setKonamiActive(true)
-          konamiIndex = 0
-          // Trigger matrix rain effect
-          triggerMatrixRain()
-          setTimeout(() => setKonamiActive(false), 5000)
-        }
-      } else {
-        konamiIndex = 0
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [])
-
-  const triggerMatrixRain = useCallback(() => {
-    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'
-    for (let i = 0; i < 50; i++) {
-      setTimeout(() => {
-        const char = document.createElement('div')
-        char.className = 'matrix-char'
-        char.textContent = chars[Math.floor(Math.random() * chars.length)]
-        char.style.left = Math.random() * 100 + 'vw'
-        char.style.top = '-20px'
-        char.style.animationDuration = (1 + Math.random() * 2) + 's'
-        document.body.appendChild(char)
-        setTimeout(() => char.remove(), 3000)
-      }, i * 50)
-    }
-  }, [])
-
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab)
-    // Scroll to top when changing tabs
-    if (lenisRef.current) {
-      lenisRef.current.scrollTo(0, { duration: 0.5 })
-    }
-  }
 
   const tabs = [
     { id: "overview", label: "Overview", component: OverviewTab },
     { id: "repositories", label: "Repositories", component: RepositoriesTab },
-    { id: "models", label: "Models", component: ModelsTab },
-    { id: "papers", label: "Papers", component: PapersTab },
-    { id: "opceanai", label: "OpceanAI", component: OpceanAITab },
-    { id: "lab", label: "Lab", component: LabTab },
-    { id: "now", label: "Now", component: NowTab },
-    { id: "stars", label: "Stars", component: StarsTab },
+    { id: "products", label: "Products", component: ProductsTab },
+    { id: "research", label: "Research", component: ResearchTab },
     { id: "contact", label: "Contact", component: ContactTab },
   ]
 
   const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || OverviewTab
 
   return (
-    <div className="min-h-screen bg-[#0d1117] noise-overlay">
-      <CustomCursor />
-      <WebGLBackground />
-      
+    <div className="min-h-screen bg-[#0d1117]">
       <TopHeader />
-      
-      <main className="max-w-[1280px] mx-auto px-4 py-6">
+
+      <section className="border-b border-[#21262d]">
+        <div className="max-w-[1280px] mx-auto px-4 py-16 md:py-24">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+            <div className="max-w-2xl">
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-sm font-mono text-[#3fb950] mb-4 tracking-wide"
+              >
+                awa &middot; OpceanAI
+              </motion.p>
+              <motion.h1
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-[40px] md:text-[56px] font-semibold leading-[1.1] text-[#e6edf3] tracking-[-0.02em]"
+              >
+                Infrastructure and AI for the{" "}
+                <span className="text-[#58a6ff]">next billion devices</span>
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mt-4 text-lg text-[#8b949e] max-w-xl leading-relaxed"
+              >
+                Building open source infrastructure — from OCI containers on Android to LLMs
+                trained on $150 phones. Creator of Doki, Yuuki, ToS, and the Imprint Theory framework.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="flex flex-wrap gap-3 mt-8"
+              >
+                <a
+                  href="https://github.com/awa-omg"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-[#238636] border border-[#2ea043] rounded-md hover:bg-[#2c974b] hover:border-[#3fb950] transition-all duration-200"
+                >
+                  Follow on GitHub
+                  <ArrowUpRight size={16} />
+                </a>
+                <a
+                  href="https://github.com/sponsors/awa-omg"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#e6edf3] bg-[#21262d] border border-[#30363d] rounded-md hover:bg-[#30363d] transition-all duration-200"
+                >
+                  Sponsor
+                  <ChevronRight size={16} />
+                </a>
+                <a
+                  href="https://github.com/OpceanAI/Doki"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#58a6ff] hover:text-[#79c0ff] hover:underline transition-all duration-200"
+                >
+                  Explore Doki &rarr;
+                </a>
+              </motion.div>
+            </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="hidden md:flex items-center justify-center w-[340px] h-[340px] rounded-xl border border-[#30363d] bg-[#161b22] flex-shrink-0"
+            >
+              <div className="text-center">
+                <svg height="80" viewBox="0 0 16 16" width="80" fill="#8b949e" className="mx-auto mb-3">
+                  <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z" />
+                </svg>
+                <p className="text-sm text-[#8b949e]">awa-omg</p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <main className="max-w-[1280px] mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Sidebar */}
-          <ProfileSidebar activeTab={activeTab} onTabChange={handleTabChange} />
-          
-          {/* Main content */}
+          <ProfileSidebar activeTab={activeTab} onTabChange={setActiveTab} />
           <div className="flex-1 min-w-0">
-            <NavTabs activeTab={activeTab} onTabChange={handleTabChange} />
-            
+            <NavTabs activeTab={activeTab} onTabChange={setActiveTab} />
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
               >
                 <ActiveComponent />
               </motion.div>
@@ -154,44 +130,7 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Terminal Overlay */}
-      <TerminalOverlay 
-        isOpen={terminalOpen} 
-        onClose={() => setTerminalOpen(false)}
-        onNavigate={handleTabChange}
-      />
-
-      {/* Now Playing (ncmpcpp) */}
-      <NowPlaying />
-
-      {/* Easter Eggs */}
-      <EasterEggs />
-      <DevMode />
-
-      {/* Konami notification */}
-      <AnimatePresence>
-        {konamiActive && (
-          <motion.div
-            initial={{ opacity: 0, y: -50, x: '-50%' }}
-            animate={{ opacity: 1, y: 0, x: '-50%' }}
-            exit={{ opacity: 0, y: -50, x: '-50%' }}
-            className="fixed top-8 left-1/2 z-50 px-6 py-3 bg-[#161b22] border border-[#388bfd] rounded-lg shadow-[0_0_30px_rgba(56,139,253,0.3)]"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full bg-[#388bfd] animate-pulse" />
-              <span className="text-sm font-medium text-[#e6edf3]">Achievement Unlocked: Konami Master</span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* AI Assistant (awa) */}
-      <AIAssistant 
-        onNavigate={handleTabChange}
-        onOpenTerminal={() => setTerminalOpen(true)}
-        terminalOpen={terminalOpen}
-        activeTab={activeTab}
-      />
+      <Footer />
     </div>
   )
 }

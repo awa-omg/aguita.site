@@ -1,193 +1,89 @@
 # AGENTS.md - AI Agent Configuration
 
-This file provides guidance for AI coding agents working with this project.
-
 ## Project Overview
 
-**aguita.site** - Personal portfolio and AI assistant for awa (Full Stack Developer & AI Engineer)
+**aguita.site** - GitHub-themed landing page for awa (Full Stack Developer & AI Engineer, founder of OpceanAI)
 
 ### Tech Stack
 - **Framework**: Next.js 16.2.0 with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS 4.x
-- **Animations**: anime.js 3.2.2 + GSAP 3.15.0
-- **AI**: Transformers.js (local AI in browser)
-- **Database**: Supabase (Realtime for ncmpcpp music sync)
+- **Animations**: Framer Motion (subtle)
+- **Icons**: lucide-react
 - **Deployment**: Vercel
 
 ### Key Features
-- 9-tab portfolio (Overview, Repositories, Models, Papers, OpceanAI, Lab, Now, Stars, Contact)
-- Local AI assistant "awa" with multi-agent architecture
-- Real-time music display from ncmpcpp via Supabase
-- WebGL background effects
-- Custom cursor with magnetic effects
-- Easter eggs (type "doki", "hack", "42")
+- GitHub.com-inspired marketing layout with hero section
+- 5-tab portfolio (Overview, Repositories, Products, Research, Contact)
+- GitHub Dark Theme design system
+- Clean, professional design - no gimmicks (no custom cursor, no WebGL, no terminal, no AI assistant)
 
 ## Project Structure
 
 ```
 aguita.site/
 ├── app/
-│   ├── layout.tsx          # Root layout with fonts
-│   ├── page.tsx            # Main page with tabs
-│   └── globals.css         # Global styles
+│   ├── layout.tsx          # Root layout with fonts (Inter, Space Grotesk, JetBrains Mono)
+│   ├── page.tsx            # Main page with hero + tabs + footer
+│   └── globals.css         # Global styles (GitHub Dark Theme)
 ├── components/
-│   ├── TopHeader.tsx       # Header with gradient text
-│   ├── ProfileSidebar.tsx  # Sidebar with file tree
-│   ├── NavTabs.tsx         # Navigation tabs
-│   ├── WebGLBackground.tsx # WebGL effects
-│   ├── CustomCursor.tsx    # Custom cursor
-│   ├── TerminalOverlay.tsx # Terminal overlay
-│   ├── AIAssistant.tsx     # AI chat interface
-│   ├── NowPlaying.tsx      # Music display
-│   ├── EasterEggs.tsx      # Easter eggs
-│   └── ui/                 # Reusable UI components
-│       ├── MagneticButton.tsx
-│       ├── GradientText.tsx
-│       ├── AnimatedCounter.tsx
-│       ├── ScrollReveal.tsx
-│       └── TypingEffect.tsx
+│   ├── TopHeader.tsx       # Header with search, GitHub link, Sponsor button
+│   ├── ProfileSidebar.tsx  # Sidebar with avatar, bio, stats
+│   ├── NavTabs.tsx         # 5-tab navigation
+│   ├── Footer.tsx          # Site footer (4 columns)
+│   ├── RepoCard.tsx        # Repository card component
+│   └── tabs/
+│       ├── OverviewTab.tsx     # Stats, pinned repos, contribution graph, timeline
+│       ├── RepositoriesTab.tsx # Repository list with search/filter
+│       ├── ProductsTab.tsx     # Doki, ToS, Shadow product showcase
+│       ├── ResearchTab.tsx     # Models, papers, datasets
+│       └── ContactTab.tsx      # Contact info and social links
 ├── hooks/
-│   ├── use-anime.ts        # anime.js hooks
-│   └── use-gsap.ts         # GSAP hooks
+│   ├── use-mobile.ts      # Mobile detection hook
+│   └── use-toast.ts       # Toast notification hook
 ├── lib/
-│   ├── supabase.ts         # Supabase client
-│   ├── assistant-context.ts
-│   ├── assistant-knowledge.ts
-│   ├── assistant-commands.ts
-│   ├── assistant-commands-tools.ts
-│   ├── assistant-web-search.ts
-│   ├── assistant-router.ts
-│   └── use-ai-tools.ts
-├── scripts/
-│   ├── ncmpcpp-sync.py     # Music sync script
-│   ├── setup-ncmpcpp.sh    # Setup script
-│   └── supabase-setup.sql  # Database schema
-└── supabase/               # Supabase Agent Skill
-    ├── SKILL.md
-    └── references/
+│   ├── supabase.ts        # Supabase client
+│   └── utils.ts           # Utility functions
+└── styles/
+    └── globals.css        # Legacy theme file (unused)
 ```
 
 ## Commands
 
-### Development
 ```bash
 pnpm dev              # Start dev server
 pnpm build            # Build for production
 pnpm start            # Start production server
 ```
 
-### Database
-```bash
-# Run SQL in Supabase dashboard
-# Or use the SQL in scripts/supabase-setup.sql
-```
+## Key Design Decisions
 
-### Music Sync (ncmpcpp)
-```bash
-# Setup
-bash scripts/setup-ncmpcpp.sh
+- **Color scheme**: GitHub Dark (#0d1117 bg, #e6edf3 text, #30363d borders, #238636 primary green)
+- **Fonts**: Inter (body), Space Grotesk (display), JetBrains Mono (code) — loaded from Google Fonts
+- **Layout**: max-w-[1280px] centered, sidebar + content grid on desktop, stacked on mobile
+- **No heavy effects**: No WebGL, no custom cursor, no glassmorphism, no glow/noise effects
+- **No AI assistant**: Removed Transformers.js-based AI to reduce bundle size
+- **No terminal/easter eggs**: Clean UX without gimmicks
 
-# Run sync
-python scripts/ncmpcpp-sync.py
-```
+## Removed Features (from original)
 
-## Environment Variables
-
-Required in `.env.local` and Vercel:
-```
-NEXT_PUBLIC_SUPABASE_URL=https://fpnndflqpwgxbhjbtaas.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-```
-
-## Agent Skills
-
-This project includes Supabase Agent Skills:
-
-### supabase
-Comprehensive Supabase development skill covering all Supabase products and integrations.
-
-**Use when:**
-- Working with Supabase products (Database, Auth, Edge Functions, Realtime, Storage)
-- Using client libraries (supabase-js, @supabase/ssr)
-- Troubleshooting auth issues
-- Using Supabase CLI or MCP server
-
-### supabase-postgres-best-practices
-Postgres performance optimization guidelines from Supabase.
-
-**Use when:**
-- Writing SQL queries or designing schemas
-- Implementing indexes or query optimization
-- Reviewing database performance issues
-- Configuring connection pooling or scaling
-
-## MCP Configuration
-
-Supabase MCP is configured in `~/.config/opencode/opencode.json`:
-```json
-{
-  "mcp": {
-    "supabase": {
-      "type": "remote",
-      "url": "https://mcp.supabase.com/mcp?project_ref=fpnndflqpwgxbhjbtaas&read_only=true&features=docs%2Caccount%2Cdatabase%2Cdebugging%2Cdevelopment%2Cfunctions%2Cbranching",
-      "enabled": true
-    }
-  }
-}
-```
+| Feature | Reason |
+|---------|--------|
+| WebGLBackground | ~600KB Three.js bundle for subtle effect |
+| CustomCursor | Impairs native UX |
+| AIAssistant | ~850MB model download |
+| TerminalOverlay | Gimmick, confusing UX |
+| EasterEggs | Not production-grade |
+| NowPlaying | Unrelated music integration |
+| GradientText / MagneticButton / AnimatedCounter / TypingEffect | Not in GitHub design |
+| File Tree Explorer | Redundant navigation |
 
 ## Build Notes
 
-- Uses `--webpack` flag for builds (Turbopack not supported on Android)
+- Uses `--webpack` flag for builds
 - `typescript: { ignoreBuildErrors: true }` in next.config.mjs
 - Static export with `output: 'export'`
 - Images unoptimized for static hosting
-
-## Key Patterns
-
-### Animation Hooks
-```typescript
-// anime.js
-import { useAnime } from '@/hooks/use-anime'
-
-// GSAP
-import { useScrollReveal } from '@/hooks/use-gsap'
-```
-
-### Supabase Realtime
-```typescript
-import { subscribeToNowPlaying } from '@/lib/supabase'
-
-const unsubscribe = subscribeToNowPlaying((data) => {
-  // Handle real-time updates
-})
-```
-
-### AI Assistant
-```typescript
-// Multi-agent routing
-import { routeMessage } from '@/lib/assistant-router'
-
-// Available agents: command, knowledge, web, tool, chat
-```
-
-## Common Tasks
-
-### Adding a new tab
-1. Create component in `components/tabs/`
-2. Add to tabs array in `app/page.tsx`
-3. Update `NavTabs.tsx` if needed
-
-### Modifying AI behavior
-1. Edit `lib/assistant-context.ts` for system prompt
-2. Edit `lib/assistant-knowledge.ts` for knowledge base
-3. Edit `lib/assistant-commands.ts` for commands
-
-### Updating database schema
-1. Edit `scripts/supabase-setup.sql`
-2. Run SQL in Supabase dashboard
-3. Update TypeScript types in `lib/supabase.ts`
 
 ## Deployment
 
@@ -198,22 +94,7 @@ git push origin master
 # Auto-deploys to Vercel
 ```
 
-## Troubleshooting
-
-### Build fails with Turbopack error
-Use `pnpm build --webpack` instead of `pnpm build`
-
-### anime.js or supabase not found
-Run `pnpm install` to ensure dependencies are installed
-
-### ncmpcpp sync not working
-1. Check MPD is running: `mpc status`
-2. Check script is running: `ps aux | grep ncmpcpp-sync`
-3. Check Supabase credentials in script
-
 ## Resources
 
-- **Live site**: https://aguita.site
 - **GitHub**: https://github.com/awa-omg/aguita.site
-- **Supabase**: https://supabase.com/dashboard/project/fpnndflqpwgxbhjbtaas
 - **Vercel**: https://vercel.com/dashboard

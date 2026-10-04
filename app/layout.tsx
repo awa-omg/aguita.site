@@ -1,22 +1,21 @@
 import type { Metadata, Viewport } from 'next'
-import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'awa - Full Stack Developer & AI Engineer',
-  description: 'Full Stack Developer and AI Engineer. Creator of Doki (OCI containers on Android), Yuuki/Yumo/ELIZA models, and Imprint Theory. Open source advocate and founder of OpceanAI.',
-  keywords: ['developer', 'full stack', 'AI', 'machine learning', 'open source', 'Doki', 'Yuuki', 'OpceanAI'],
+  title: 'awa — containers & models for impossible places',
+  description:
+    'awa (awa-omg) — Full Stack Developer & AI Engineer, founder of OpceanAI. Creator of Doki, ToS, Shadow, Yuuki and Imprint Theory.',
   authors: [{ name: 'awa' }],
   openGraph: {
-    title: 'awa - Full Stack Developer & AI Engineer',
-    description: 'Creator of Doki, Yuuki, and OpceanAI. Open source advocate democratizing AI for everyone.',
+    title: 'awa — aguita.site',
+    description:
+      'Creator of Doki, Yuuki and OpceanAI. Open source infrastructure for resource-constrained environments.',
     type: 'website',
-    locale: 'en_US',
   },
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0d1117',
+  themeColor: '#F0EBDE',
   width: 'device-width',
   initialScale: 1,
 }
@@ -27,39 +26,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" data-theme="dark" suppressHydrationWarning>
+    <html lang="en">
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem('theme');
-                  if (theme === 'light') {
-                    document.documentElement.setAttribute('data-theme', 'light');
-                  }
-                } catch(e) {}
-              })();
-            `,
-          }}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+          rel="stylesheet"
         />
       </head>
-      <body
-        style={{
-          margin: 0,
-          backgroundColor: "var(--color-canvas-default)",
-          color: "var(--color-fg-default)",
-          fontFamily:
-            "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'",
-          fontSize: "14px",
-          lineHeight: "1.5",
-          WebkitFontSmoothing: "antialiased" as const,
-          MozOsxFontSmoothing: "grayscale" as const,
-        }}
-      >
-        {children}
-        <Analytics />
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
